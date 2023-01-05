@@ -49,6 +49,10 @@ public class QuestionDao {
 		return list;
 	}
 	
+	SELECT orders_code ordersCode FROM question q
+INNER JOIN orders o ON q.orders_code = o.order_code"
+	WHERE o.customer_id = ?";
+	
 	// questionList 출력
 	// 사용하는 곳 : questionListController
 	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
