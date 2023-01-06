@@ -42,8 +42,7 @@ public class RemoveQuestionController extends HttpServlet {
 		response.sendRedirect(request.getContextPath()+"/question/questionList");
 		return;
 		}
-		// 삭제실패 (아이디 확인)
-		String msg = URLEncoder.encode("삭제되지 않습니다. 관리자에게 문의하세요.", "utf-8");
-		response.sendRedirect(request.getContextPath() + "/question/questionList?msg="+msg);
+		// 삭제실패
+		response.sendRedirect(request.getContextPath() + "/question/questionList");
 	}
 }

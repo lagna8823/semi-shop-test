@@ -54,8 +54,6 @@ public class QuestionListController extends HttpServlet {
 		// 삭제
 		
 		request.setCharacterEncoding("UTF-8"); // request 한글코딩	
-		String msg = request.getParameter("msg");
-		request.setAttribute("msg", msg);
 		request.setAttribute("questionlist", list);
 		request.setAttribute("currentPage", currentPage); 
 		request.setAttribute("rowPerPage", rowPerPage); 
