@@ -29,6 +29,8 @@
 				<th>questionMemo</th>
 				<th>createdate</th>
 				<th>답변</th>
+				
+				
 				<th>답변일</th>
 				<td>
 					<c:if test="${loginCustomer == CustomerId}">
@@ -88,6 +90,7 @@
 			</tbody>
 			</table>
 		</div>
+		<br>
 		<!-- 페이징 -->
 		<div>
 			<!-- 첫 페이지 -->

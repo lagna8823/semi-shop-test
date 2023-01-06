@@ -3,13 +3,42 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vo.Customer;
 import vo.Question;
 
 public class QuestionDao {
+	
+	// removeQuestion (문의글 삭제) 답변 달리기 전까지만 가능
+	// 사용하는 곳 : modifyQuestionController	
+	public int modifyQuestion(Connection conn, Customer loginCustomer, int questionCode) throws Exception {
+		int resultRow = 0;
+		String sql = "";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, loginCustomer.getCustomerId());
+		stmt.setInt(2, questionCode);
+		resultRow = stmt.executeUpdate();
+		stmt.close();
+		return resultRow;
+	}
+		
+	// removeQuestion (문의글 삭제) 답변 달리기 전까지만 가능
+	// 사용하는 곳 : removeQuestionController	
+	public int removeQuestion(Connection conn, Customer loginCustomer, int questionCode) throws Exception {
+		int resultRow = 0;
+		String sql = "DELETE q "
+				+ " FROM question q "
+				+ "		INNER JOIN orders o "
+				+ "		ON q.orders_code = o.order_code "
+				+ "WHERE q.question_code = ? AND o.customer_id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, questionCode);
+		stmt.setString(2, loginCustomer.getCustomerId());
+		resultRow = stmt.executeUpdate();
+		stmt.close();
+		return resultRow;
+	}
 	
 	// addQuestion (문의글 추가)
 	// 사용하는 곳 : addQuestionController	
@@ -49,16 +78,14 @@ public class QuestionDao {
 		return list;
 	}
 	
-	SELECT orders_code ordersCode FROM question q
-INNER JOIN orders o ON q.orders_code = o.order_code"
-	WHERE o.customer_id = ?";
 	
 	// questionList 출력
 	// 사용하는 곳 : questionListController
 	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
 		ArrayList<Question> list= new ArrayList<Question>();
-		String sql = "SELECT question_code questionCode, orders_code ordersCode, category, question_memo questionMemo, createdate "
-				+ " FROM question ORDER BY createdate DESC LIMIT ?,?";
+		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate\r\n"
+				+ "	FROM (SELECT ROW_NUMBER() OVER(ORDER BY createdate DESC) rnum, question_code, orders_code, category, question_memo, createdate FROM question) r \r\n"
+				+ "WHERE rnum BETWEEN ? AND ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1,  beginRow);
 		stmt.setInt(2,  rowPerPage);
@@ -88,5 +115,4 @@ INNER JOIN orders o ON q.orders_code = o.order_code"
 	    }
 		return cnt;
 	}
-
 }
