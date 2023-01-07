@@ -24,66 +24,25 @@
 			<table border="0">
 			<thead>
 			<tr>
-				<th>orderCode</th>
 				<th>category</th>
 				<th>questionMemo</th>
 				<th>createdate</th>
 				<th>답변</th>
-				
-				
-				<th>답변일</th>
-				<td>
-					<c:if test="${loginCustomer == CustomerId}">
-						<span>수정</span> 
-					</c:if>
-					<c:if test="${loginCustomer != CustomerId}">
-						<span>&nbsp;</span>
-					</c:if>
-				</td>
-				<td>
-					<c:if test="${loginCustomer == CustomerId}">
-						<span>삭제</span> 
-					</c:if>
-					<c:if test="${loginCustomer != CustomerId}">
-						<span>&nbsp;</span>
-					</c:if>
-				</td>
 			</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="q" items="${questionlist}">
 					<tr>
-						<td>${q.orderCode}</td>
 						<td>${q.category}</td>
-						<td>${q.questionMemo}</td>
+						<td>
+							<a href="${pageContext.request.contextPath}/question/questionOne?questionCode=${q.questionCode}">
+							${q.questionMemo}	
+							</a>
+						</td>
 						<td>${q.createdate}</td>
 						<td>
-							<c:if test="${commentMemo == null}">답변전</c:if> 
-							<c:if test="${commentMemo != null}">답변완료</c:if> 	
-						</td>
-						<td>
-							<c:if test="${createdate == null}">답변전</c:if> 
-							<c:if test="${createdate != null}">답변시간</c:if> 
-						</td>
-						<td>
-							<c:if test="${loginCustomer == CustomerId}">
-								<a href="${pageContext.request.contextPath}/question/questionModify"?questionCode=${questionCode}">
-									수정 
-								</a>
-							</c:if>
-							<c:if test="${loginCustomer != CustomerId}">
-								<span>&nbsp;</span>
-							</c:if>
-						</td>
-						<td>
-							<c:if test="${loginCustomer == CustomerId}">
-								<a href="${pageContext.request.contextPath}/question/questionRemove"?questionCode=${questionCode}">
-									삭제
-								</a>
-							</c:if>
-							<c:if test="${loginCustomer != CustomerId}">
-								<span>&nbsp;</span>
-							</c:if>
+							<c:if test="${q.commentMemo == null}">답변전</c:if> 
+							<c:if test="${q.commentMemo != null}">답변완료</c:if> 	
 						</td>
 					</tr>	
 				</c:forEach>

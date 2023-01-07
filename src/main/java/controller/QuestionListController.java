@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,13 +49,13 @@ public class QuestionListController extends HttpServlet {
 		// 모델 호출
 		this.questionService = new QuestionService();
 		cnt = questionService.count();  // 카운트
-		// 페이지 리스트
-		ArrayList<Question> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
-		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
-		// 삭제
 		
+		// 페이지 리스트
+		ArrayList<HashMap<String, Object>> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
+		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
 		request.setCharacterEncoding("UTF-8"); // request 한글코딩	
 		request.setAttribute("questionlist", list);
+		System.out.print(list);
 		request.setAttribute("currentPage", currentPage); 
 		request.setAttribute("rowPerPage", rowPerPage); 
 		request.setAttribute("lastPage", lastPage);

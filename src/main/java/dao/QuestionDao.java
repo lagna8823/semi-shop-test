@@ -3,7 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import vo.Customer;
 import vo.Question;
@@ -31,13 +33,56 @@ public class QuestionDao {
 				+ " FROM question q "
 				+ "		INNER JOIN orders o "
 				+ "		ON q.orders_code = o.order_code "
-				+ "WHERE q.question_code = ? AND o.customer_id = ?";
+				+ " WHERE q.question_code = ? AND o.customer_id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, questionCode);
 		stmt.setString(2, loginCustomer.getCustomerId());
 		resultRow = stmt.executeUpdate();
 		stmt.close();
 		return resultRow;
+	}
+	
+	// questionOne (수정,삭제 메뉴 활성/비활성 = 세션의 로그인아이디와 오더코드의 작성자 아이디 일치시)  
+	// 사용하는 곳 : questionOneController
+	public String selectQuestionOneCustomerIdByOrderCode(Connection conn, int ordersCode) throws Exception {
+		String customerId = null;
+		String sql = " SELECT o.customer_id customerId FROM question q"
+				+ "			INNER JOIN orders o"
+				+ "			ON q.orders_code = o.order_code"
+				+ "	WHERE q.orders_code = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, ordersCode);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			customerId = rs.getString("customerId");
+		}
+		return customerId;
+	}
+	
+	// questionOne 출력
+	// 사용하는 곳 : questionOneController
+	public HashMap<String, Object> selectQuestionOne(Connection conn, int questionCode) throws Exception {
+		HashMap<String, Object> q = null;
+		String sql = "SELECT q.question_code questionCode, q.orders_code ordersCode, q.category category, q.question_memo questionMemo"
+				+ "		, q.createdate createdate, c.comment_memo commentMemo, c.createdate createdateComment "
+				+ "	 FROM question q "
+				+ "		INNER JOIN question_comment c "
+				+ "		ON q.question_code = c.question_code "
+				+ " WHERE q.question_code = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, questionCode);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			q = new HashMap<String, Object>();
+			q.put("questionCode", rs.getInt("questionCode"));
+			q.put("ordersCode", rs.getInt("ordersCode"));
+			q.put("category", rs.getString("category"));
+			q.put("questionMemo", rs.getString("questionMemo"));
+			q.put("createdate", rs.getString("createdate"));
+			q.put("commentMemo", rs.getString("commentMemo"));
+			q.put("createdateComment", rs.getString("createdateComment"));
+		}
+		return q;
 	}
 	
 	// addQuestion (문의글 추가)
@@ -77,26 +122,32 @@ public class QuestionDao {
 	    }
 		return list;
 	}
-	
-	
 	// questionList 출력
 	// 사용하는 곳 : questionListController
-	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
-		ArrayList<Question> list= new ArrayList<Question>();
-		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate\r\n"
-				+ "	FROM (SELECT ROW_NUMBER() OVER(ORDER BY createdate DESC) rnum, question_code, orders_code, category, question_memo, createdate FROM question) r \r\n"
-				+ "WHERE rnum BETWEEN ? AND ?";
+	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
+		ArrayList<HashMap<String, Object>> list = null;
+		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category"
+				+ "			, r.question_memo questionMemo, r.createdate createdate, r.commentMemo commentMemo"
+				+ "		FROM "
+				+ "			( SELECT ROW_NUMBER() OVER(ORDER BY q.createdate DESC) rnum"
+				+ "				, q.question_code, q.orders_code, q.category, q.question_memo, q.createdate, qc.comment_memo commentMemo"
+				+ " 			FROM question q"
+				+ "					INNER JOIN question_comment qc"
+				+ "					ON q.question_code = qc.question_code) r"
+				+ "	WHERE rnum BETWEEN ? AND ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1,  beginRow);
 		stmt.setInt(2,  rowPerPage);
 		ResultSet rs = stmt.executeQuery();
+		list = new ArrayList<HashMap<String, Object>>();
 		while(rs.next()) {
-			Question q = new Question();
-			q.setQuestionCode(rs.getInt("questionCode"));
-			q.setOrderCode(rs.getInt("ordersCode"));
-			q.setCategory(rs.getString("category"));
-			q.setQuestionMemo(rs.getString("questionMemo"));
-			q.setCreatedate(rs.getString("createdate"));
+			HashMap<String, Object> q = new HashMap<String, Object>();
+			q.put("questionCode", rs.getInt("questionCode"));
+			q.put("ordersCode", rs.getInt("ordersCode"));
+			q.put("category", rs.getString("category"));
+			q.put("questionMemo", rs.getString("questionMemo"));
+			q.put("createdate", rs.getString("createdate"));
+			q.put("commentMemo", rs.getString("commentMemo"));
 			list.add(q);
 		}
 		return list;
