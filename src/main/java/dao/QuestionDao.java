@@ -99,9 +99,7 @@ public class QuestionDao {
 		return resultRow;
 	}
 
-	
-	
-	// addQuestion (ordersCode조회)
+	// addQuestion (ordersCode 조회)
 	// 사용하는 곳 : addQuestionController	
 	public ArrayList<Question> selectOrdersCode(Connection conn, Customer loginCustomer) throws Exception{
 		ArrayList<Question> list = null;
@@ -122,32 +120,44 @@ public class QuestionDao {
 	    }
 		return list;
 	}
+	
+	// questionList 답변 유무 확인
+	// 사용하는 곳 : questionListController
+	public int selecttCommentMemoByQuestionCode(Connection conn, Question questionCode) throws Exception {
+		int resultRow = 0;
+		String sql = "SELECT qc.comment_memo commentMemo"
+				+ "		FROM question q"
+				+ "			INNER JOIN question_comment qc"
+				+ "			ON q.question_code = qc.question_code"
+				+ "	WHERE qc.question_code=?";   	 
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1,  questionCode.getQuestionCode());
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			resultRow = 1;
+		} 
+		return resultRow;
+	}
+	
 	// questionList 출력
 	// 사용하는 곳 : questionListController
-	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
-		ArrayList<HashMap<String, Object>> list = null;
-		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category"
-				+ "			, r.question_memo questionMemo, r.createdate createdate, r.commentMemo commentMemo"
-				+ "		FROM "
-				+ "			( SELECT ROW_NUMBER() OVER(ORDER BY q.createdate DESC) rnum"
-				+ "				, q.question_code, q.orders_code, q.category, q.question_memo, q.createdate, qc.comment_memo commentMemo"
-				+ " 			FROM question q"
-				+ "					INNER JOIN question_comment qc"
-				+ "					ON q.question_code = qc.question_code) r"
-				+ "	WHERE rnum BETWEEN ? AND ?";
+	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
+		ArrayList<Question> list= new ArrayList<Question>();
+		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate"
+				+ "	FROM (SELECT ROW_NUMBER() OVER(ORDER BY createdate DESC) rnum, question_code, orders_Code, category, question_memo, createdate"
+				+ "				FROM question ) r "
+				+ "	WHERE rnum BETWEEN ? AND ?";   	 
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1,  beginRow);
 		stmt.setInt(2,  rowPerPage);
 		ResultSet rs = stmt.executeQuery();
-		list = new ArrayList<HashMap<String, Object>>();
 		while(rs.next()) {
-			HashMap<String, Object> q = new HashMap<String, Object>();
-			q.put("questionCode", rs.getInt("questionCode"));
-			q.put("ordersCode", rs.getInt("ordersCode"));
-			q.put("category", rs.getString("category"));
-			q.put("questionMemo", rs.getString("questionMemo"));
-			q.put("createdate", rs.getString("createdate"));
-			q.put("commentMemo", rs.getString("commentMemo"));
+			Question q = new Question();
+			q.setQuestionCode(rs.getInt("questionCode"));
+			q.setOrderCode(rs.getInt("ordersCode"));
+			q.setCategory(rs.getString("category"));
+			q.setQuestionMemo(rs.getString("questionMemo"));
+			q.setCreatedate(rs.getString("createdate"));
 			list.add(q);
 		}
 		return list;

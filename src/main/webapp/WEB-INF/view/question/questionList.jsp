@@ -41,8 +41,8 @@
 						</td>
 						<td>${q.createdate}</td>
 						<td>
-							<c:if test="${q.commentMemo == null}">답변전</c:if> 
-							<c:if test="${q.commentMemo != null}">답변완료</c:if> 	
+							<c:if test="${resultRow != 1}">답변전</c:if> 
+							<c:if test="${resultRow == 1}">답변완료</c:if> 	
 						</td>
 					</tr>	
 				</c:forEach>

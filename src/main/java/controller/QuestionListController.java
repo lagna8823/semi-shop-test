@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.QuestionDao;
 import service.QuestionService;
 import vo.Customer;
 import vo.Emp;
@@ -48,17 +49,24 @@ public class QuestionListController extends HttpServlet {
 		
 		// 모델 호출
 		this.questionService = new QuestionService();
-		cnt = questionService.count();  // 카운트
-		
-		// 페이지 리스트
-		ArrayList<HashMap<String, Object>> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
-		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
 		request.setCharacterEncoding("UTF-8"); // request 한글코딩	
+		
+		// 카운트
+		cnt = questionService.count(); 
+		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
+		
+		// 모델 리스트 및 페이징
+		ArrayList<Question> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
 		request.setAttribute("questionlist", list);
-		System.out.print(list);
 		request.setAttribute("currentPage", currentPage); 
 		request.setAttribute("rowPerPage", rowPerPage); 
 		request.setAttribute("lastPage", lastPage);
+		
+		// 답변 확인
+		Question questionCode = list.get(0);
+		System.out.print(list.get(0)+"메모");
+		int resultRow = questionService.getCommentMemoByQuestionCode(questionCode);
+		request.setAttribute("resultRow", resultRow);
 		
 		// 고객센터 폼 View
 		if(loginCustomer == null && loginEmp != null) {

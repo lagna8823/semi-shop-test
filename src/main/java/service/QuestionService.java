@@ -129,16 +129,17 @@ public class QuestionService {
 		}
 		return list;
 	}
-		
-	// questionList 출력
+	
+	// questionList 답변 유무 확인
 	// 사용하는 곳 : questionListController
-	public ArrayList<HashMap<String, Object>> getQuestionListByPage(int beginRow, int rowPerPage) {
-		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+	public int getCommentMemoByQuestionCode(Question questionCode) {
+		this.questionDao = new QuestionDao();
+		int resultRow = 0;
 		Connection conn  = null;
 		try {
 			conn = DBUtil.getConnection();
 			questionDao = new QuestionDao();
-			list = questionDao.selectQuestionListByPage(conn, beginRow, rowPerPage);
+			resultRow = questionDao.selecttCommentMemoByQuestionCode(conn, questionCode);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -148,7 +149,29 @@ public class QuestionService {
 				e1.printStackTrace();
 			}
 		}
-		return list;
+		return resultRow;
+	}
+	
+	// questionList 출력
+	// 사용하는 곳 : questionListController
+	public ArrayList<Question> getQuestionListByPage(int beginRow, int rowPerPage) {
+		this.questionDao = new QuestionDao();
+		ArrayList<Question> listCode = null;
+		Connection conn  = null;
+		try {
+			conn = DBUtil.getConnection();
+			questionDao = new QuestionDao();
+			listCode = questionDao.selectQuestionListByPage(conn, beginRow, rowPerPage);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch(SQLException e1){
+				e1.printStackTrace();
+			}
+		}
+		return listCode;
 	}
 	// questionList 페이징
 	// 사용하는 곳 : questionListController
