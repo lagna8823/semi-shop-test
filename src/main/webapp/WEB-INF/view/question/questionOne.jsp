@@ -83,7 +83,7 @@
 			<div>
 				<td>
 					<c:if test="${loginCustomer == customerId and q.commentMemo == null}">
-						<a href="${pageContext.request.contextPath}/question/modifyQuestion">
+						<a href="${pageContext.request.contextPath}/question/modifyQuestion?questionCode=${q.questionCode}">
 							<span>수정</span> 
 						</a>	
 					</c:if>

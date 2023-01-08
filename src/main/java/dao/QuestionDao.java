@@ -12,14 +12,17 @@ import vo.Question;
 
 public class QuestionDao {
 	
-	// removeQuestion (문의글 삭제) 답변 달리기 전까지만 가능
+	// modifyQuestion (문의글 수정) 답변 달리기 전까지만 가능
 	// 사용하는 곳 : modifyQuestionController	
-	public int modifyQuestion(Connection conn, Customer loginCustomer, int questionCode) throws Exception {
+	public int modifyQuestion(Connection conn, Question question) throws Exception {
 		int resultRow = 0;
-		String sql = "";
+		String sql = " UPDATE question "
+				+ " 	SET category = ?, question_memo = ?, createdate = now()"
+				+ " where question_code = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, loginCustomer.getCustomerId());
-		stmt.setInt(2, questionCode);
+		stmt.setString(1, question.getCategory());
+		stmt.setString(2, question.getQuestionMemo());
+		stmt.setInt(3, question.getQuestionCode());
 		resultRow = stmt.executeUpdate();
 		stmt.close();
 		return resultRow;
@@ -58,7 +61,7 @@ public class QuestionDao {
 		}
 		return customerId;
 	}
-	
+	 
 	// questionOne 출력
 	// 사용하는 곳 : questionOneController, question
 	public HashMap<String, Object> selectQuestionOne(Connection conn, int questionCode) throws Exception {

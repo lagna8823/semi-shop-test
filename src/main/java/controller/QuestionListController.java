@@ -54,10 +54,6 @@ public class QuestionListController extends HttpServlet {
 		// 카운트
 		cnt = questionService.count(); 
 		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
-		System.out.println(lastPage+""+"last");
-		System.out.println(beginRow+""+"beginRow");
-		System.out.println(currentPage+""+"currentPage");
-		System.out.println(cnt+""+"cnt");
 		
 		// 모델 리스트 및 페이징
 		ArrayList<HashMap<String, Object>> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
