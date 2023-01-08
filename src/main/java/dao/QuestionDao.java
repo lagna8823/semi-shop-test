@@ -60,7 +60,7 @@ public class QuestionDao {
 	}
 	
 	// questionOne 출력
-	// 사용하는 곳 : questionOneController
+	// 사용하는 곳 : questionOneController, question
 	public HashMap<String, Object> selectQuestionOne(Connection conn, int questionCode) throws Exception {
 		HashMap<String, Object> q = null;
 		String sql = "SELECT q.question_code questionCode, q.orders_code ordersCode, q.category category, q.question_memo questionMemo"

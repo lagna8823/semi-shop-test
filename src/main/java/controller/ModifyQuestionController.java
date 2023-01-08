@@ -6,36 +6,36 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class ModifyQuestionController
- */
-@WebServlet("/ModifyQuestionController")
+import service.QuestionService;
+import vo.Customer;
+import vo.Emp;
+
+@WebServlet("/question/modifyQuestion")
 public class ModifyQuestionController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ModifyQuestionController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	private QuestionService questionService;
+	
+	// 고객센터 문의글 수정
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	// VIEW -> /WEB-INF/view/question/modifyQuestion.jsp
+	// 로그인 후에만 진입가능
+	HttpSession session = request.getSession(); 
+	
+	// 로그인 값 체크
+	Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
+	Emp loginEmp = (Emp)session.getAttribute("loginEmp");
+	if(loginCustomer == null && loginEmp == null) {
+		response.sendRedirect(request.getContextPath()+"/login");
+		return;
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
+	// 매개변수, request 값세팅
+	request.setCharacterEncoding("UTF-8"); // request 한글코딩	
+	int questionCode = Integer.parseInt(request.getParameter("questionCode"));
+			
+	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+	
 	}
-
 }
