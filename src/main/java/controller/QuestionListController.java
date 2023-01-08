@@ -54,19 +54,17 @@ public class QuestionListController extends HttpServlet {
 		// 카운트
 		cnt = questionService.count(); 
 		int lastPage = (int)(Math.ceil((double)cnt / (double)rowPerPage));
+		System.out.println(lastPage+""+"last");
+		System.out.println(beginRow+""+"beginRow");
+		System.out.println(currentPage+""+"currentPage");
+		System.out.println(cnt+""+"cnt");
 		
 		// 모델 리스트 및 페이징
-		ArrayList<Question> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
+		ArrayList<HashMap<String, Object>> list = questionService.getQuestionListByPage(beginRow, rowPerPage);
+		
 		request.setAttribute("questionlist", list);
 		request.setAttribute("currentPage", currentPage); 
-		request.setAttribute("rowPerPage", rowPerPage); 
 		request.setAttribute("lastPage", lastPage);
-		
-		// 답변 확인
-		Question questionCode = list.get(0);
-		System.out.print(list.get(0)+"메모");
-		int resultRow = questionService.getCommentMemoByQuestionCode(questionCode);
-		request.setAttribute("resultRow", resultRow);
 		
 		// 고객센터 폼 View
 		if(loginCustomer == null && loginEmp != null) {

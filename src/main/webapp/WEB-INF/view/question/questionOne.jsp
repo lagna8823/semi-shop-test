@@ -64,8 +64,8 @@
 				</tr>
 				<tr>
 					<td >
-						<c:if test="${q.createdate == null}">답변전</c:if> 
-						<c:if test="${q.createdate != null}">${q.createdate}</c:if> 
+						<c:if test="${q.commentMemo == null}">답변전</c:if> 
+						<c:if test="${q.commentMemo != null}">${q.commentCreatedate}</c:if> 
 					</td>
 				</tr>
 				<tr>
@@ -74,7 +74,7 @@
 				<tr>
 					<td >
 						<c:if test="${q.commentMemo == null}">답변전</c:if> 
-						<c:if test="${q.commentMemo != null}">${q.questionMemo}</c:if>
+						<c:if test="${q.commentMemo != null}">${q.commentMemo}</c:if>
 					</td>
 				</tr>
 				</table>
@@ -82,22 +82,22 @@
 			<!-- 문의글 수정, 삭제 -->
 			<div>
 				<td>
-					<c:if test="${loginCustomer == customerId} && ${q.commentMemo == null}">
+					<c:if test="${loginCustomer == customerId and q.commentMemo == null}">
 						<a href="${pageContext.request.contextPath}/question/modifyQuestion">
 							<span>수정</span> 
 						</a>	
 					</c:if>
-					<c:if test="${loginCustomer != customerId} && ${q.commentMemo != null}">
+					<c:if test="${loginCustomer != customerId and q.commentMemo != null}">
 						<span>&nbsp;</span>
 					</c:if>
 				</td>
 				<td>
-					<c:if test="${loginCustomer == customerId} && ${q.commentMemo == null}">
+					<c:if test="${loginCustomer == customerId and q.commentMemo == null}">
 						<a id="remove" href="${pageContext.request.contextPath}/question/removeQuestion?questionCode=${q.questionCode}">
 							<span>삭제</span> 
 						</a>
 					</c:if>
-					<c:if test="${loginCustomer != customerId} && ${q.commentMemo != null}">
+					<c:if test="${loginCustomer != customerId and q.commentMemo != null}">
 						<span>&nbsp;</span>
 					</c:if>
 				</td>

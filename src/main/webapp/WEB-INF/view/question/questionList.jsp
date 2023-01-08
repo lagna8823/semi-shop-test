@@ -41,8 +41,8 @@
 						</td>
 						<td>${q.createdate}</td>
 						<td>
-							<c:if test="${resultRow != 1}">답변전</c:if> 
-							<c:if test="${resultRow == 1}">답변완료</c:if> 	
+							<c:if test="${q.commentMemo == null}">답변전</c:if> 
+							<c:if test="${q.commentMemo != null}">답변완료</c:if> 	
 						</td>
 					</tr>	
 				</c:forEach>
@@ -53,11 +53,11 @@
 		<!-- 페이징 -->
 		<div>
 			<!-- 첫 페이지 -->
-			<a href="${pageContext.request.contextPath}/question/questionList?rowPerPage=${rowPerPage}&currentPage=1">처음</a>
+			<a href="${pageContext.request.contextPath}/question/questionList?currentPage=1">처음</a>
 			
 			<!-- 이전 페이지 -->
 			<c:if test="${currentPage>1}">
-				<a href="${pageContext.request.contextPath}/question/questionList?rowPerPage=${rowPerPage}&currentPage=${currentPage-1}">이전</a>
+				<a href="${pageContext.request.contextPath}/question/questionList?currentPage=${currentPage-1}">이전</a>
 			</c:if>	
 			
 			<!-- 현재 페이지 -->
@@ -65,11 +65,11 @@
 			
 			<!-- 다음 페이지 -->
 			<c:if test="${currentPage<lastPage}">
-				<a href="${pageContext.request.contextPath}/question/questionList?rowPerPage=${rowPerPage}&currentPage=${currentPage+1}">다음</a>
+				<a href="${pageContext.request.contextPath}/question/questionList?currentPage=${currentPage+1}">다음</a>
 			</c:if>	
 			
 			<!-- 마지막 페이지 -->
-			<a href="${pageContext.request.contextPath}/question/questionList?rowPerPage=${rowPerPage}&currentPage=${lastPage}">마지막</a>
+			<a href="${pageContext.request.contextPath}/question/questionList?currentPage=${lastPage}">마지막</a>
 		</div>
 	</div>
 </body>

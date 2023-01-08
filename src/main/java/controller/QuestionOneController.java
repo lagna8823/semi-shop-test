@@ -42,7 +42,6 @@ public class QuestionOneController extends HttpServlet {
 		q = questionService.getQuestionOne(questionCode);
 		int ordersCode = (int) q.get("ordersCode");
 		String customerId = questionService.getQuestionOneCustomerIdByOrderCode(ordersCode);
-		
 		request.setAttribute("q", q);
 		request.setAttribute("customerId", customerId);
 		request.setAttribute("loginCustomer", loginCustomer.getCustomerId());

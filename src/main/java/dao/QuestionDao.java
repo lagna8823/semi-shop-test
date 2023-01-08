@@ -64,10 +64,10 @@ public class QuestionDao {
 	public HashMap<String, Object> selectQuestionOne(Connection conn, int questionCode) throws Exception {
 		HashMap<String, Object> q = null;
 		String sql = "SELECT q.question_code questionCode, q.orders_code ordersCode, q.category category, q.question_memo questionMemo"
-				+ "		, q.createdate createdate, c.comment_memo commentMemo, c.createdate createdateComment "
+				+ "		, q.createdate createdate, qc.comment_memo commentMemo, qc.createdate commentCreatedate "
 				+ "	 FROM question q "
-				+ "		INNER JOIN question_comment c "
-				+ "		ON q.question_code = c.question_code "
+				+ "		LEFT OUTER JOIN question_comment qc "
+				+ "		ON q.question_code = qc.question_code "
 				+ " WHERE q.question_code = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, questionCode);
@@ -80,7 +80,7 @@ public class QuestionDao {
 			q.put("questionMemo", rs.getString("questionMemo"));
 			q.put("createdate", rs.getString("createdate"));
 			q.put("commentMemo", rs.getString("commentMemo"));
-			q.put("createdateComment", rs.getString("createdateComment"));
+			q.put("commentCreatedate", rs.getString("commentCreatedate"));
 		}
 		return q;
 	}
@@ -121,43 +121,29 @@ public class QuestionDao {
 		return list;
 	}
 	
-	// questionList 답변 유무 확인
-	// 사용하는 곳 : questionListController
-	public int selecttCommentMemoByQuestionCode(Connection conn, Question questionCode) throws Exception {
-		int resultRow = 0;
-		String sql = "SELECT qc.comment_memo commentMemo"
-				+ "		FROM question q"
-				+ "			INNER JOIN question_comment qc"
-				+ "			ON q.question_code = qc.question_code"
-				+ "	WHERE qc.question_code=?";   	 
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1,  questionCode.getQuestionCode());
-		ResultSet rs = stmt.executeQuery();
-		while(rs.next()) {
-			resultRow = 1;
-		} 
-		return resultRow;
-	}
-	
 	// questionList 출력
 	// 사용하는 곳 : questionListController
-	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
-		ArrayList<Question> list= new ArrayList<Question>();
+	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate"
-				+ "	FROM (SELECT ROW_NUMBER() OVER(ORDER BY createdate DESC) rnum, question_code, orders_Code, category, question_memo, createdate"
-				+ "				FROM question ) r "
-				+ "	WHERE rnum BETWEEN ? AND ?";   	 
+				+ " , qc.comment_memo commentMemo"
+				+ " 	FROM (SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "				, question_code, orders_Code, category, question_memo, createdate FROM question ) r"
+				+ "			LEFT OUTER JOIN question_comment qc"
+				+ "			ON r.question_code = qc.question_code"
+				+ " 	ORDER BY createdate DESC LIMIT ?, ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1,  beginRow);
-		stmt.setInt(2,  rowPerPage);
+		stmt.setInt(1, beginRow);
+		stmt.setInt(2, rowPerPage);
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
-			Question q = new Question();
-			q.setQuestionCode(rs.getInt("questionCode"));
-			q.setOrderCode(rs.getInt("ordersCode"));
-			q.setCategory(rs.getString("category"));
-			q.setQuestionMemo(rs.getString("questionMemo"));
-			q.setCreatedate(rs.getString("createdate"));
+			HashMap<String, Object> q = new HashMap<String, Object>();
+			q.put("questionCode", rs.getInt("questionCode"));
+			q.put("ordersCode", rs.getInt("ordersCode"));
+			q.put("category", rs.getString("category"));
+			q.put("questionMemo", rs.getString("questionMemo"));
+			q.put("createdate", rs.getString("createdate"));
+			q.put("commentMemo", rs.getString("commentMemo"));
 			list.add(q);
 		}
 		return list;
