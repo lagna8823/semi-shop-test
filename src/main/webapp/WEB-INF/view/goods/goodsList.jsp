@@ -11,6 +11,6 @@
 			궂즈리스트
 	<a href="${pageContext.request.contextPath}/logout">로그아웃</a>
 	<a href="${pageContext.request.contextPath}/question/questionList">고객센터</a>
-	<a href="${pageContext.request.contextPath}/question/questionCommentList">문의사항</a>
+	<a href="${pageContext.request.contextPath}/questionComment/questionCommentList">고객센터(관리자)</a>
 </body>
 </html>

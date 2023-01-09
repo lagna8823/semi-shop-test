@@ -3,7 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import vo.Customer;
 import vo.Question;
@@ -11,60 +13,41 @@ import vo.Question;
 public class QuestionCommentDao {
 	/* 답변 페이지는 관리자만 사용가능*/
 	
-	
-	// removeQuestionComment (답변글 수정) 답변 달리기 전까지만 가능
-	// 사용하는 곳 : modifyQuestionController	
-	public int modifyQuestion(Connection conn, Customer loginCustomer, int questionCode) throws Exception {
-		int resultRow = 0;
-		String sql = "";
+	// addQuestionComment (문의글에 대한 답변추가)
+	// 사용하는 곳 : addQuestionCommentController	
+	public int addQuestionComment(Connection conn, Question addQuestionComment) throws Exception {
+		int resultRow=0;
+		String sql = "INSERT INTO question_comment (question_code, emp_id, comment_memo, createdate)"
+				+ " VALUES(?,?,?,now())";
 		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, loginCustomer.getCustomerId());
-		stmt.setInt(2, questionCode);
+		stmt.setInt(1, addQuestionComment.getQuestionCode());
+		stmt.setString(2, addQuestionComment.getEmpId());
+		stmt.setString(3, addQuestionComment.getCommentMemo());
 		resultRow = stmt.executeUpdate();
-		stmt.close();
 		return resultRow;
 	}
 		
-	// removeQuestion (답변글 삭제) 답변 달리기 전까지만 가능
-	// 사용하는 곳 : removeQuestionController	
-	public int removeQuestion(Connection conn, Customer loginCustomer, int questionCode) throws Exception {
-		int resultRow = 0;
-		String sql = "";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, loginCustomer.getCustomerId());
-		stmt.setInt(2, questionCode);
-		resultRow = stmt.executeUpdate();
-		stmt.close();
-		return resultRow;
-	}
 	
-	// addQuestion (답변글 추가)
-	// 사용하는 곳 : addQuestionController	
-	public int addQuestion(Connection conn, Question addQuestion) throws Exception {
-		int resultRow=0;
-		String sql = "INSERT INTO question (orders_code, category, question_memo, createdate)"
-				+ " VALUES(?,?,?,now())";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, addQuestion.getOrderCode());
-		stmt.setString(2, addQuestion.getCategory());
-		stmt.setString(3, addQuestion.getQuestionMemo());
-		resultRow = stmt.executeUpdate();
-		return resultRow;
-	}
-
-	
-	
-	// addQuestion (ordersCode조회)
-	// 사용하는 곳 : addQuestionController	
-	public ArrayList<Question> selectOrdersCode(Connection conn, Customer loginCustomer) throws Exception{
+	SELECT q.question_code questionCode, q.orders_code ordersCode, q.category category, q.question_memo questionMemo, q.createdate createdate
+	 FROM question_comment qc
+	 LEFT outer join question q
+		 ON qc.question_code = q.question_code
+	  ORDER BY qc.question_code DESC;
+	  WHERE qc.question_code = 11
+			  
+			  
+	// addQuestionComment (question 정보조회)
+	// 사용하는 곳 : addQuestionCommentController	
+	public ArrayList<Question> selectOrdersCode(Connection conn, int questionCode) throws Exception{
 		ArrayList<Question> list = null;
-		String sql = "SELECT orders_code ordersCode"
-				+ "	 FROM question q"
-				+ "		 INNER JOIN orders o"
-				+ "		 ON q.orders_code = o.order_code"
-				+ "	 WHERE o.customer_id = ?";
+		String sql = "SELECT q.question_code questionCode, q.orders_code ordersCode, q.category category"
+				+ "				, q.question_memo questionMemo, q.createdate createdate"
+				+ "	 FROM question_comment qc"
+				+ "		 INNER JOIN question q"
+				+ "		 ON qc.question_code = q.question_code"
+				+ "	 WHERE q.question_code = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, loginCustomer.getCustomerId());
+		stmt.setInt(1, questionCode);
 		ResultSet rs = stmt.executeQuery();
 		list = new ArrayList<Question>();
 	    while(rs.next()) {
@@ -75,36 +58,43 @@ public class QuestionCommentDao {
 	    }
 		return list;
 	}
-	
-	
-	// questionList 출력
-	// 사용하는 곳 : questionListController
-	public ArrayList<Question> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
-		ArrayList<Question> list= new ArrayList<Question>();
-		String sql = "SELECT question_code questionCode, orders_code ordersCode, category, question_memo questionMemo, createdate "
-				+ " FROM question ORDER BY createdate DESC LIMIT ?,?";
+		
+	// questionCommentList 출력
+	// 사용하는 곳 : questionCommentListController
+	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate"
+				+ " , qc.comment_memo commentMemo, qc.createdate commentCreatedate, qc.emp_id empId"
+				+ " 	FROM (SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "				, question_code, orders_Code, category, question_memo, createdate FROM question ) r"
+				+ "			LEFT OUTER JOIN question_comment qc"
+				+ "			ON r.question_code = qc.question_code"
+				+ " 	ORDER BY createdate DESC LIMIT ?, ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1,  beginRow);
-		stmt.setInt(2,  rowPerPage);
+		stmt.setInt(1, beginRow);
+		stmt.setInt(2, rowPerPage);
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
-			Question q = new Question();
-			q.setQuestionCode(rs.getInt("questionCode"));
-			q.setOrderCode(rs.getInt("ordersCode"));
-			q.setCategory(rs.getString("category"));
-			q.setQuestionMemo(rs.getString("questionMemo"));
-			q.setCreatedate(rs.getString("createdate"));
+			HashMap<String, Object> q = new HashMap<String, Object>();
+			q.put("questionCode", rs.getInt("questionCode"));
+			q.put("ordersCode", rs.getInt("ordersCode"));
+			q.put("category", rs.getString("category"));
+			q.put("questionMemo", rs.getString("questionMemo"));
+			q.put("createdate", rs.getString("createdate"));
+			q.put("commentMemo", rs.getString("commentMemo"));
+			q.put("commentCreatedate", rs.getString("commentCreatedate"));
+			q.put("empId", rs.getString("empId"));
 			list.add(q);
 		}
 		return list;
 	}
 	
 	
-	// questionList 페이징
-	// 사용하는 곳 : questionListController
+	// questionCommentList 페이징
+	// 사용하는 곳 : questionCommentListController
 	public int count(Connection conn) throws Exception{
 		int cnt = 0; // 전체 행의 수
-		String sql = "SELECT COUNT(*) cnt FROM question";
+		String sql = "SELECT COUNT(*) cnt FROM question_comment";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 	    if(rs.next()) {
