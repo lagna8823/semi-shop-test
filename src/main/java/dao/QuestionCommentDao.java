@@ -156,21 +156,315 @@ public class QuestionCommentDao {
 		stmt.close();
 		return returnQuestion;
 	}
-		
+	
 	// questionCommentList 출력
 	// 사용하는 곳 : questionCommentListController
-	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage) throws Exception {
+	public ArrayList<HashMap<String, Object>> selectQuestionListByPage(Connection conn, int beginRow, int rowPerPage, String word, String search, String category, String sort) throws Exception {
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
-		String sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo, r.createdate createdate"
-				+ " , qc.comment_memo commentMemo, qc.createdate commentCreatedate, qc.emp_id empId"
-				+ " 	FROM (SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
-				+ "				, question_code, orders_Code, category, question_memo, createdate FROM question ) r"
-				+ "			LEFT OUTER JOIN question_comment qc"
-				+ "			ON r.question_code = qc.question_code"
-				+ " 	ORDER BY createdate DESC LIMIT ?, ?";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, beginRow);
-		stmt.setInt(2, rowPerPage);
+		String sql=null;
+		PreparedStatement stmt=null;
+		if(search.equals("search") || word == null) {
+			search=("");
+		} 
+		if(word.equals("") || word == null) {
+			word=("");
+		} 
+		if(category.equals("") || category == null) {
+			category=("");
+		} 
+		if(sort.equals("sort") || sort == null) {
+			sort=("");
+		} 
+		// sort 전체, 검색값 전체
+		if(sort.equals("") &&(search.equals("") || search == null) ) {
+			search=("");
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE (r.orders_code LIKE ? OR o.customer_id LIKE ? OR r.emp_id LIKE ? OR r.question_memo LIKE ?) AND r.category LIKE ?"
+					+ "			 ORDER BY commentCreatedate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+word+"%");
+			stmt.setString(3, "%"+word+"%");
+			stmt.setString(4, "%"+word+"%");
+			stmt.setString(5, "%"+category+"%");
+			stmt.setInt(6, beginRow);
+			stmt.setInt(7, rowPerPage);
+		}
+		
+		// sort 전체, 검색값 주문번호
+		else if(sort.equals("") && search.equals("ordersCode")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE r.orders_code = ? AND r.category LIKE ? "
+					+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, word);
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+			
+		// sort 전체, 검색값 고객ID
+		} else if(sort.equals("") && search.equals("customerId")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE o.customer_id LIKE ? AND r.category LIKE ?"
+					+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+			
+		// sort 전체, 검색값 사원ID
+		} else if(sort.equals("") && search.equals("empId")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE r.emp_id LIKE ? AND r.category LIKE ? "
+					+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+			
+		// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 전체	
+		} else if(sort.equals("asc") && (search.equals("") || search == null )) {
+			search=("");
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code"
+					+ "							WHERE qc.comment_memo IS NULL) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE (r.orders_code LIKE ? OR o.customer_id LIKE ? OR r.emp_id LIKE ? OR r.question_memo LIKE ?) AND r.category LIKE ?"
+					+ "			 ORDER BY comment_memo " +sort+ ", createdate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+word+"%");
+			stmt.setString(3, "%"+word+"%");
+			stmt.setString(4, "%"+word+"%");
+			stmt.setString(5, "%"+category+"%");
+			stmt.setInt(6, beginRow);
+			stmt.setInt(7, rowPerPage);
+			// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 주문번호	
+		} else if(sort.equals("asc") && search.equals("ordersCode")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code"
+					+ "							WHERE qc.comment_memo IS NULL) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE r.orders_code = ? AND r.category LIKE ? "
+					+ " 		ORDER BY comment_memo " +sort+ " ,createdate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, word);
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+		// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 고객ID			
+		} else if(sort.equals("asc") && search.equals("customerId")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code"
+					+ "							WHERE qc.comment_memo IS NULL) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE o.customer_id LIKE ? AND r.category LIKE ?"
+					+ " 		ORDER BY comment_memo " +sort+ ", createdate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+		// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 사원ID
+		} else if(sort.equals("asc") && search.equals("empId")) {
+			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+					+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+					+ "			, o.customer_id customerId"
+					+ "		FROM "
+					+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+					+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+					+ "					FROM "
+					+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+					+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+					+ "							LEFT OUTER JOIN question_comment qc"
+					+ "							ON r.question_code = qc.question_code"
+					+ "							WHERE qc.comment_memo IS NULL) r"
+					+ "				LEFT OUTER JOIN orders o"
+					+ "				ON r.orders_code = o.order_code"
+					+ "		WHERE r.emp_id LIKE ? AND r.category LIKE ? "
+					+ " 		ORDER BY comment_memo " +sort+ ", createdate DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%"+word+"%");
+			stmt.setString(2, "%"+category+"%");
+			stmt.setInt(3, beginRow);
+			stmt.setInt(4, rowPerPage);
+			
+		// 답변완료 sort:DESC(commentMemo있음) ->commentCreatedate DESC, 검색값 전체
+		} else if(sort.equals("desc") && (search.equals("") || search == null )) {
+		search=("");
+		sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+				+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+				+ "			, o.customer_id customerId"
+				+ "		FROM "
+				+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+				+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+				+ "					FROM "
+				+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+				+ "							INNER JOIN question_comment qc"
+				+ "							ON r.question_code = qc.question_code) r"
+				+ "				INNER JOIN orders o"
+				+ "				ON r.orders_code = o.order_code"
+				+ "		WHERE (r.orders_code LIKE ? OR o.customer_id LIKE ? OR r.emp_id LIKE ? OR r.question_memo LIKE ?) AND r.category LIKE ?"
+				+ "			 ORDER BY commentCreatedate DESC LIMIT ?, ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, "%"+word+"%");
+		stmt.setString(2, "%"+word+"%");
+		stmt.setString(3, "%"+word+"%");
+		stmt.setString(4, "%"+word+"%");
+		stmt.setString(5, "%"+category+"%");
+		stmt.setInt(6, beginRow);
+		stmt.setInt(7, rowPerPage);
+	// 답변완료 sort:DESC(commentMemo있음) ->commentCreatedate DESC, 검색값 주문번호
+	} else if(sort.equals("desc") && search.equals("ordersCode")) {
+		sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+				+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+				+ "			, o.customer_id customerId"
+				+ "		FROM "
+				+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+				+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+				+ "					FROM "
+				+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+				+ "							INNER JOIN question_comment qc"
+				+ "							ON r.question_code = qc.question_code) r"
+				+ "				INNER JOIN orders o"
+				+ "				ON r.orders_code = o.order_code"
+				+ "		WHERE r.orders_code = ? AND r.category LIKE ? "
+				+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, word);
+		stmt.setString(2, "%"+category+"%");
+		stmt.setInt(3, beginRow);
+		stmt.setInt(4, rowPerPage);
+		
+	// 답변완료 sort:DESC(commentMemo있음) ->commentCreatedate DESC, 검색값 고객ID			
+	} else if(sort.equals("desc") && search.equals("customerId")) {
+		sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+				+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+				+ "			, o.customer_id customerId"
+				+ "		FROM "
+				+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+				+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+				+ "					FROM "
+				+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+				+ "							INNER JOIN question_comment qc"
+				+ "							ON r.question_code = qc.question_code) r"
+				+ "				INNER JOIN orders o"
+				+ "				ON r.orders_code = o.order_code"
+				+ "		WHERE o.customer_id LIKE ? AND r.category LIKE ?"
+				+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, "%"+word+"%");
+		stmt.setString(2, "%"+category+"%");
+		stmt.setInt(3, beginRow);
+		stmt.setInt(4, rowPerPage);
+		
+	// 답변완료 sort:DESC(commentMemo있음) ->commentCreatedate DESC, 검색값 사원ID				
+	} else if(sort.equals("desc") && search.equals("empId")) {
+		sql = "SELECT r.rnum rnum, r.question_code questionCode, r.orders_code ordersCode, r.category category, r.question_memo questionMemo"
+				+ "			, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
+				+ "			, o.customer_id customerId"
+				+ "		FROM "
+				+ "			(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
+				+ "					, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
+				+ "					FROM "
+				+ "						(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
+				+ "								, question_code, orders_Code, category, question_memo, createdate FROM question) r"
+				+ "							INNER JOIN question_comment qc"
+				+ "							ON r.question_code = qc.question_code) r"
+				+ "				INNER JOIN orders o"
+				+ "				ON r.orders_code = o.order_code"
+				+ "		WHERE r.emp_id LIKE ? AND r.category LIKE ? "
+				+ " 		ORDER BY commentCreatedate DESC LIMIT ?, ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, "%"+word+"%");
+		stmt.setString(2, "%"+category+"%");
+		stmt.setInt(3, beginRow);
+		stmt.setInt(4, rowPerPage);
+	}
+		
 		ResultSet rs = stmt.executeQuery();
 		while(rs.next()) {
 			HashMap<String, Object> q = new HashMap<String, Object>();
@@ -182,6 +476,7 @@ public class QuestionCommentDao {
 			q.put("commentMemo", rs.getString("commentMemo"));
 			q.put("commentCreatedate", rs.getString("commentCreatedate"));
 			q.put("empId", rs.getString("empId"));
+			q.put("customerId", rs.getString("customerId"));
 			list.add(q);
 		}
 		return list;
