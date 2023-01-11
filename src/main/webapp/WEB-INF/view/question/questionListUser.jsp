@@ -7,11 +7,13 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<header>
+	<header>	
+		<a href="${pageContext.request.contextPath}/home">홈으로</a>
 		<a href="${pageContext.request.contextPath}/logout">로그아웃</a>
 		<a href="${pageContext.request.contextPath}/question/questionList">고객센터</a>
-		<a href="${pageContext.request.contextPath}/question/questionCommentList">comment</a>
-	</header>
+		<a href="${pageContext.request.contextPath}/question/questionList">나의문의</a>
+		<a href="${pageContext.request.contextPath}/questionComment/questionCommentList">고객센터(관리자 페이지)</a>
+		</header>
 	<h2>나의 문의사항</h2>
 	<div>
 		<!-- 문의글 작성 링크-->

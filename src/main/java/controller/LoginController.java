@@ -92,7 +92,7 @@ public class LoginController extends HttpServlet {
 			    }
 			// 결과값이 있다면
 			session.setAttribute("loginEmp", returnEmp);
-		    response.sendRedirect(request.getContextPath() + "/goods/goodsList");
+		    response.sendRedirect(request.getContextPath() + "/home");
 	     } 
 	}
 }
