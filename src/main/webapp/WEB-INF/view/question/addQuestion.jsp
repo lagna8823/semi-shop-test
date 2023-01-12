@@ -9,12 +9,22 @@
 			<script>
 				<!-- 문의글 내용 유효성체크 -->
 				$(document).ready(function() {
-					// 입력값 숫자 제한
-					const MAX_COUNT = 5;
 					$('#questionMemo').keyup(function() {
-						if(MAX_COUNT < ($('#questionMemo').val().length)){
+						// 최대 글자수
+						const MAX_COUNT = 5;
+						//입력한 값의 글자수
+						var inputLength = $('#questionMemo').val().length; 
+						// 남은 글자수
+						var remain = MAX_COUNT-inputLength; 
+						$.querySelector('#count').innerHTML = $('#questionMemo').val().length; 
+						
+						if(($('#questionMemo').val().length) < MAX_COUNT){
+							//$('#count').innerHTML = $('#questionMemo').val().length);
+						} else if($('#questionMemo').val().length > MAX_COUNT-1){
+							//console.log($('#questionMemo').val);
 							alert(MAX_COUNT+'자까지 입력가능합니다');
-							$('#questionMemo') = $('#questionMemo').val().substring(0, MAX_COUNT);
+							$('#questionMemo').value = $('#questionMemo').value.substring(0, MAX_COUNT);
+							
 						} 
 						/* else {
 							$('#count').innerHTML = $('#questionMemo').val().length);
@@ -53,8 +63,9 @@
 		<div>
 			<button onclick="history.back()">뒤로가기</button>
 		</div>
-		<input type="number" id="count"><br>
+		<br>
 		<div>
+			글자수 : <span id="count"></span> 
 			<!-- 문의글 작성 페이지-->
 			<div>
 			<form id="addForm" action="${pageContext.request.contextPath}/question/addQuestion" method="post">
