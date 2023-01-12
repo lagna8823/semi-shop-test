@@ -74,16 +74,17 @@
 	    </style>
 	
 	
+	
 	    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 	    <script type="text/javascript">
 	        $(document).ready(function() {
 	
-	            // When page loads...
+	            //When page loads...
 	            $(".tab_content").hide(); //Hide all content
 	            $("ul.tabs li:first").addClass("active").show(); //Activate first tab
 	            $(".tab_content:first").show(); //Show first tab content
 	
-	            // On Click Event
+	            //On Click Event
 	            $("ul.tabs li").click(function() {
 	
 	                $("ul.tabs li").removeClass("active"); //Remove any "active" class
@@ -94,41 +95,7 @@
 	                $(activeTab).fadeIn(); //Fade in the active ID content
 	                return false;
 	            });
-				// 페이지에 바로 버턴 누름을 방지하기 위해
-				// 고객 로그인
-				$('#signinBtn').click(function() {
-					
-					// ID 유효성 체크
-					if( ($('#custoemrId').val().length) < 1) {
-						alert('아이디가 입력되지 않았습니다.');
-						$('#custoemrId').focus();
-						return;
-					}	
-					// PW 유효성 체크
-					if( ($('#custoemrPw').val().length) < 1) {
-						alert('비밀번호가 입력되지 않았습니다.');
-						$('#custoemrPw').focus();
-						return;
-					}	
-					$('#signinForm').submit();
-				});
-				// 사원 로그인
-				$('#empSigninBtn').click(function() {
-					
-					// ID 유효성 체크
-					if( ($('#empId').val().length) < 1) {
-						alert('아이디가 입력되지 않았습니다.');
-						$('#empId').focus();
-						return;
-					}	
-					// PW 유효성 체크
-					if( ($('#empPw').val().length) < 1) {
-						alert('비밀번호가 입력되지 않았습니다.');
-						$('#empPw').focus();
-						return;
-					}	
-					$('#empSigninForm').submit();
-				});
+	
 	        });
 	    </script>
 	</head>
@@ -145,37 +112,37 @@
 		    
 				<!--Customer 로그인-->
 		        <div id="tab1" class="tab_content">
-		            <form id="signinForm" action="${pageContext.request.contextPath}/login" method="post">
+		            <form action="${pageContext.request.contextPath}/login" method="post">
 					<div>
-						<label>Login ID&nbsp;</label>
-						<input id="custoemrId" type="text"  name="customerId">
+						<label>Customer ID</label>
+						<input type="text"  name="customerId">
 					</div>
 					<div>
 						<label>Password</label>
-						<input id="custoemrPw" type="password" name="customerPw">
+						<input type="password" name="customerPw">
 					</div>
 					<div>
-				    	<button id="signinBtn" type="button">로그인</button>
+				    	<button type="submit">로그인</button>
 				    </div>
-				    </form>
-						<div>
-						 	<a href="${pageContext.request.contextPath}/customer/addCustomer">회원가입</a>  
-					    </div>
+			    </form>
+					<div>
+					 	<a href="${pageContext.request.contextPath}/customer/addCustomer">회원가입</a>  
+				    </div>
 		        </div>
 				
 				<!--Emp 로그인-->
 		        <div id="tab2" class="tab_content">
-		           <form id="empSigninForm" action="${pageContext.request.contextPath}/login" method="post">
+		           <form action="${pageContext.request.contextPath}/login" method="post">
 					<div>
-						<label>Login ID&nbsp;</label>
-						<input id="empId" type="text"  name="empId">
+						<label>Emp ID</label>
+						<input type="text"  name="empId">
 					</div>
 					<div>
 						<label>Password</label>
-						<input id="empPw" type="password" name="empPw">
+						<input type="password" name="empPw">
 					</div>
 					<div>
-				    	<button id="empSigninBtn" type="button">로그인</button>
+				    	<button type="submit">로그인</button>
 				    </div>
 			    </form>
 					<div>

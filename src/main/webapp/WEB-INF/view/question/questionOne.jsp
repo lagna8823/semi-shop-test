@@ -5,6 +5,29 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
+		<style>
+			body {
+			  padding:1.5em;
+			  background: #f5f5f5
+			}
+			
+			table {
+			  border: 1px #a39485 solid;
+			  font-size: .9em;
+			  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+			  width: 40%;
+			  height: 50%
+			  border-collapse: collapse;
+			  border-radius: 5px;
+			  overflow: hidden;
+			}
+			th {
+			  text-align: center;
+			}
+			td {
+			  text-align: center;
+			}
+		</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function() {
@@ -50,19 +73,19 @@
 					<td>${q.category}</td>
 				</tr>
 				<tr>
-					<th >작성일</th>
+					<th>작성일</th>
 				</tr>
 				<tr>
-					<td >${q.createdate}</td>
+					<td>${q.createdate}</td>
 				</tr>
 				<tr>
-					<th >questionMemo</th>
+					<th>questionMemo</th>
 				</tr>
 				<tr>
-					<td >${q.questionMemo}</td>
+					<td>${q.questionMemo}</td>
 				</tr>
 				<tr>
-					<th >답변일</th>
+					<th>답변일</th>
 				</tr>
 				<tr>
 					<td >
