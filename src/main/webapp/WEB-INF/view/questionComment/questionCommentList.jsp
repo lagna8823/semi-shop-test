@@ -6,23 +6,23 @@
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-		<script>
-			<!--변경 확인 -->
-			$(document).ready(function() {
-				$('#rowPerPage').change(function() {
-					$('#pageForm').submit();
-					alert('change');
-				})
-				$('#category').change(function() {
-					$('#pageForm').submit();
-					alert('change');
-				})
-				$('#sort').change(function() {
-					$('#pageForm').submit();
-					alert('change');
-				})
-			});
-		</script>
+	<script>
+		<!--변경 확인 -->
+		$(document).ready(function() {
+			$('#rowPerPage').change(function() {
+				$('#pageForm').submit();
+				alert('change');
+			})
+			$('#category').change(function() {
+				$('#pageForm').submit();
+				alert('change');
+			})
+			$('#sort').change(function() {
+				$('#pageForm').submit();
+				alert('change');
+			})
+		});
+	</script>
 	</head>
 	<body>
 		<header>

@@ -191,7 +191,8 @@ public class QuestionCommentDao {
 					+ "							ON r.question_code = qc.question_code) r"
 					+ "				LEFT OUTER JOIN orders o"
 					+ "				ON r.orders_code = o.order_code"
-					+ "		WHERE (r.orders_code LIKE ? OR o.customer_id LIKE ? OR r.emp_id LIKE ? OR r.question_memo LIKE ?) AND r.category LIKE ?"
+					+ "		WHER"
+					+ "E (r.orders_code LIKE ? OR o.customer_id LIKE ? OR r.emp_id LIKE ? OR r.question_memo LIKE ?) AND r.category LIKE ?"
 					+ "			 ORDER BY createdate DESC LIMIT ?, ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, "%"+word+"%");

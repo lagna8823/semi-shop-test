@@ -89,14 +89,14 @@ public class QuestionService {
 	
 	// questionOne (수정,삭제 메뉴 활성/비활성 = 세션의 로그인아이디와 오더코드의 작성자 아이디 일치시)  
 	// 사용하는 곳 : questionOneController
-	public String getQuestionOneCustomerIdByOrderCode(int ordersCode) {
+	public String getQuestionOneCustomerIdByOrderCode(int orderCode) {
 		this.questionDao = new QuestionDao();
 		String customerId = null;
 		Connection conn  = null;
 		try {
 			conn = DBUtil.getConnection();
 			questionDao = new QuestionDao();
-			customerId = questionDao.selectQuestionOneCustomerIdByOrderCode(conn, ordersCode);
+			customerId = questionDao.selectQuestionOneCustomerIdByOrderCode(conn, orderCode);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -179,14 +179,14 @@ public class QuestionService {
 	}
 	// questionList 출력
 	// 사용하는 곳 : questionListController
-	public ArrayList<HashMap<String, Object>> getQuestionListByPage(int beginRow, int rowPerPage) {
+	public ArrayList<HashMap<String, Object>> getQuestionListByPage(int beginRow, int rowPerPage, String word) {
 		this.questionDao = new QuestionDao();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		Connection conn  = null;
 		try {
 			conn = DBUtil.getConnection();
 			questionDao = new QuestionDao();
-			list = questionDao.selectQuestionListByPage(conn, beginRow, rowPerPage);
+			list = questionDao.selectQuestionListByPage(conn, beginRow, rowPerPage, word);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -41,8 +41,8 @@ public class ModifyQuestionController extends HttpServlet {
 		HashMap<String, Object> q = new HashMap<String, Object>();
 		this.questionService = new QuestionService();
 		q = questionService.getQuestionOne(questionCode);
-		int ordersCode = (int) q.get("ordersCode");
-		String customerId = questionService.getQuestionOneCustomerIdByOrderCode(ordersCode);
+		int orderCode = (int) q.get("orderCode");
+		String customerId = questionService.getQuestionOneCustomerIdByOrderCode(orderCode);
 		request.setAttribute("q", q);
 		request.setAttribute("questionCode", questionCode);
 		request.setAttribute("customerId", customerId);
@@ -81,9 +81,9 @@ public class ModifyQuestionController extends HttpServlet {
 		this.questionService = new QuestionService();
 		int resultRow = questionService.modifyQuestion(modifyQuestion);
 				
-		// 글작성 성공
+		// 글작성 성공 
 		if(resultRow !=0) {
-			response.sendRedirect(request.getContextPath()+"/question/questionList");
+			response.sendRedirect(request.getContextPath()+"/question/questionOne?questionCode="+questionCode);
 			return;
 		}
 		// 작성실패(입력값 확인)

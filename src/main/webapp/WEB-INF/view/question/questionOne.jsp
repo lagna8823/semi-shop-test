@@ -16,7 +16,6 @@
 			  font-size: .9em;
 			  box-shadow: 0 2px 5px rgba(0,0,0,.25);
 			  width: 40%;
-			  height: 50%
 			  border-collapse: collapse;
 			  border-radius: 5px;
 			  overflow: hidden;
@@ -24,8 +23,23 @@
 			th {
 			  text-align: center;
 			}
-			td {
-			  text-align: center;
+			  
+			thead {
+			  font-weight: bold;
+			  color: #fff;
+			}
+			  
+			 td, th {
+			  padding: 1em .5em;
+			  vertical-align: middle;
+			}
+			  
+			 td {
+			  border-bottom: 1px solid rgba(0,0,0,.1);
+			  text-align: center
+			}
+			a {
+			  text-decoration: none;
 			}
 		</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -53,24 +67,24 @@
 			<a href="${pageContext.request.contextPath}/questionComment/questionCommentList">고객센터(관리자 페이지)</a>
 		</header>
 		<div>
-			<h2>상세보기</h2>
-			<div>
-				<a href="${pageContext.request.contextPath}/question/questionList">뒤로가기</a>
+			<h2 align="center">상세보기</h2>
+			<div align="center" style="padding-right: 42em"> 
+				<button onclick="history.back()">뒤로가기</button>
 			</div>
 			<!-- 고객센터 내용 (분류/주문번호, 문의작성일, 문의내용, 답변일, 답변내용-->
-			<div>
+			<div align="center">
 				<table border="1">
 				<tr>
-					<th>ordersCode</th>
+					<th>문의번호/카테고리</th>
 				</tr>
 				<tr>
-					<td>${q.ordersCode}</td>
-				</tr>
-				<tr> 
-					<th>category</th>
+					<td>${q.questionCode}: ${q.category}</td>
 				</tr>
 				<tr>
-					<td>${q.category}</td>
+					<th>주문번호/상품명</th>
+				</tr>
+				<tr>
+					<td>${q.orderCode} : ${q.goodsName}</td>
 				</tr>
 				<tr>
 					<th>작성일</th>
@@ -79,7 +93,7 @@
 					<td>${q.createdate}</td>
 				</tr>
 				<tr>
-					<th>questionMemo</th>
+					<th>문의내용</th>
 				</tr>
 				<tr>
 					<td>${q.questionMemo}</td>
@@ -94,7 +108,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th >commentMemo</th>
+					<th >답변내용</th>
 				</tr>
 				<tr>
 					<td >
@@ -104,8 +118,9 @@
 				</tr>
 				</table>
 			</div>
+			<br>
 			<!-- 문의글 수정, 삭제 -->
-			<div>
+			<div align="center">
 				<td>
 					<c:if test="${loginCustomer == customerId and q.commentMemo == null}">
 						<a href="${pageContext.request.contextPath}/question/modifyQuestion?questionCode=${q.questionCode}">
