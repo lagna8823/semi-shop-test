@@ -113,7 +113,7 @@
 					<th>주문번호/상품명</th>
 				</tr>
 				<tr>
-					<td>${q.orderCode}{q.goodsName}</td>
+					<td>${q.orderCode}&nbsp;${q.goodsName}</td>
 				</tr>
 				<tr>
 					<th>작성일</th>
