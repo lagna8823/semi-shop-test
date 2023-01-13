@@ -149,7 +149,7 @@ public class QuestionCommentDao {
 				+ "							WHERE question_code = ?) r"
 				+ "						INNER JOIN orders o"
 				+ "						ON r.orders_code = o.order_code ) r"
-				+ "			INNER JOIN goods g"
+				+ "			INNER JOIN goods g "
 				+ "			ON r.goods_code = g.goods_code";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, questionCode);
@@ -157,11 +157,10 @@ public class QuestionCommentDao {
 	    if(rs.next()) {
 	    	q = new HashMap<String, Object>();
 			q.put("questionCode", rs.getInt("questionCode"));
-			q.put("ordersCode", rs.getInt("ordersCode"));
+			q.put("orderCode", rs.getInt("orderCode"));
 			q.put("category", rs.getString("category"));
 			q.put("questionMemo", rs.getString("questionMemo"));
 			q.put("createdate", rs.getString("createdate"));
-			q.put("commentCreatedate", rs.getString("commentCreatedate"));
 			q.put("goodsCode", rs.getInt("goodsCode"));
 			q.put("goodsName", rs.getString("goodsName"));
 			
