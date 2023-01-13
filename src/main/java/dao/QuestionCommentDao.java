@@ -389,14 +389,14 @@ public class QuestionCommentDao {
 					+ "					ON r.orders_code = o.order_code)r"
 					+ "		INNER JOIN goods g"
 					+ "		ON r.goods_code = g.goods_code"
-					+ " WHERE (r.order_code = ? AND r.category LIKE ?"
+					+ " WHERE r.order_code = ? AND r.category LIKE ?"
 					+ "	ORDER BY comment_memo " +sort +", createdate DESC LIMIT ?, ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, word);
 			stmt.setString(2, "%"+category+"%");
 			stmt.setInt(3, beginRow);
 			stmt.setInt(4, rowPerPage);
-		
+			
 			// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 상품명	
 			} else if(sort.equals("asc") && search.equals("goodsName")) {
 				sql = "SELECT r.rnum rnum, r.question_code questionCode, r.category category, r.question_memo questionMemo"
@@ -447,7 +447,7 @@ public class QuestionCommentDao {
 					+ "					ON r.orders_code = o.order_code)r"
 					+ "		INNER JOIN goods g"
 					+ "		ON r.goods_code = g.goods_code"
-					+ " WHERE (r.customer_id LIKE ? AND r.category LIKE ?"
+					+ " WHERE r.customer_id LIKE ? AND r.category LIKE ?"
 					+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, "%"+word+"%");
@@ -455,34 +455,6 @@ public class QuestionCommentDao {
 			stmt.setInt(3, beginRow);
 			stmt.setInt(4, rowPerPage);
 			
-		// 답변전 sort:ASC(commentMemo없음 null값위로) ->createdate DESC, 검색값 사원ID
-		} else if(sort.equals("asc") && search.equals("empId")) {
-			sql = "SELECT r.rnum rnum, r.question_code questionCode, r.category category, r.question_memo questionMemo"
-					+ "		, r.createdate createdate, r.comment_memo commentMemo, r.commentCreatedate commentCreatedate, r.emp_id empId"
-					+ "		, r.order_code orderCode , r.customer_id customerId, g.goods_code goodsCode, g.goods_name goodsName"
-					+ "	FROM 					 			"
-					+ "			(SELECT r.rnum, r.question_code, r.category, r.question_memo, r.createdate, r.comment_memo"
-					+ "					, r.commentCreatedate, r.emp_id, o.order_code, o.goods_code, o.customer_id"
-					+ "				FROM "
-					+ "						(SELECT r.rnum, r.question_code, r.orders_code, r.category, r.question_memo, r.createdate createdate"
-					+ "							 	, qc.comment_memo, qc.createdate commentCreatedate, qc.emp_id"
-					+ "							FROM "
-					+ "							 		(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
-					+ "							 				, question_code, orders_Code, category, question_memo, createdate FROM question) r"
-					+ "							 	LEFT OUTER JOIN question_comment qc"
-					+ "							 	ON r.question_code = qc.question_code"
-					+ "							WHERE qc.comment_memo IS NULL) r"
-					+ "					INNER JOIN orders o"
-					+ "					ON r.orders_code = o.order_code)r"
-					+ "		INNER JOIN goods g"
-					+ "		ON r.goods_code = g.goods_code"
-					+ " WHERE r.emp_id LIKE ? AND r.category LIKE ?"
-					+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, "%"+word+"%");
-			stmt.setString(2, "%"+category+"%");
-			stmt.setInt(3, beginRow);
-			stmt.setInt(4, rowPerPage);
 			
 		// 답변완료 sort:DESC(commentMemo있음) ->commentCreatedate DESC, 검색값 전체
 		} else if(sort.equals("desc") && (search.equals("") || search == null )) {
@@ -532,12 +504,12 @@ public class QuestionCommentDao {
 				+ "							 		(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
 				+ "							 				, question_code, orders_Code, category, question_memo, createdate FROM question) r"
 				+ "							 	INNER JOIN question_comment qc"
-				+ "							 	ON r.question_code = qc.question_code r"
+				+ "							 	ON r.question_code = qc.question_code) r"
 				+ "					INNER JOIN orders o"
-				+ "					ON r.orders_code = o.order_code)r"
+				+ "					ON r.orders_code = o.order_code) r"
 				+ "		INNER JOIN goods g"
 				+ "		ON r.goods_code = g.goods_code"
-				+ " WHERE (r.order_code = ? AND r.category LIKE ?"
+				+ " WHERE r.order_code = ? AND r.category LIKE ?"
 				+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
 		stmt = conn.prepareStatement(sql);
 		stmt.setString(1, word);
@@ -560,12 +532,12 @@ public class QuestionCommentDao {
 					+ "							 		(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
 					+ "							 				, question_code, orders_Code, category, question_memo, createdate FROM question) r"
 					+ "							 	INNER JOIN question_comment qc"
-					+ "							 	ON r.question_code = qc.question_code r"
+					+ "							 	ON r.question_code = qc.question_code) r"
 					+ "					INNER JOIN orders o"
-					+ "					ON r.orders_code = o.order_code)r"
+					+ "					ON r.orders_code = o.order_code) r"
 					+ "		INNER JOIN goods g"
 					+ "		ON r.goods_code = g.goods_code"
-					+ " WHERE (g.goods_name LIKE ? AND r.category LIKE ?"
+					+ " WHERE g.goods_name LIKE ? AND r.category LIKE ?"
 					+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, "%"+word+"%");
@@ -588,12 +560,12 @@ public class QuestionCommentDao {
 				+ "							 		(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
 				+ "							 				, question_code, orders_Code, category, question_memo, createdate FROM question) r"
 				+ "							 	INNER JOIN question_comment qc"
-				+ "							 	ON r.question_code = qc.question_code r"
+				+ "							 	ON r.question_code = qc.question_code) r"
 				+ "					INNER JOIN orders o"
-				+ "					ON r.orders_code = o.order_code)r"
+				+ "					ON r.orders_code = o.order_code) r"
 				+ "		INNER JOIN goods g"
 				+ "		ON r.goods_code = g.goods_code"
-				+ " WHERE (r.customer_id LIKE ? AND r.category LIKE ?"
+				+ " WHERE r.customer_id LIKE ? AND r.category LIKE ?"
 				+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
 		stmt = conn.prepareStatement(sql);
 		stmt.setString(1, "%"+word+"%");
@@ -616,12 +588,12 @@ public class QuestionCommentDao {
 				+ "							 		(SELECT ROW_NUMBER() OVER(ORDER BY question_code DESC) rnum"
 				+ "							 				, question_code, orders_Code, category, question_memo, createdate FROM question) r"
 				+ "							 	INNER JOIN question_comment qc"
-				+ "							 	ON r.question_code = qc.question_code r"
+				+ "							 	ON r.question_code = qc.question_code) r"
 				+ "					INNER JOIN orders o"
-				+ "					ON r.orders_code = o.order_code)r"
+				+ "					ON r.orders_code = o.order_code) r"
 				+ "		INNER JOIN goods g"
 				+ "		ON r.goods_code = g.goods_code"
-				+ " WHERE (r.emp_id LIKE ? AND r.category LIKE ?"
+				+ " WHERE r.emp_id LIKE ? AND r.category LIKE ?"
 				+ "	ORDER BY comment_memo " +sort+ " , createdate DESC LIMIT ?, ?";
 		stmt = conn.prepareStatement(sql);
 		stmt.setString(1, "%"+word+"%");
