@@ -34,15 +34,14 @@ public class ModifyQuestionCommentController extends HttpServlet {
 			
 		// 매개변수, request 값세팅
 		Emp loignEmp = loginEmp;
-		int commentCode = Integer.parseInt(request.getParameter("commentCode"));
+		int questionCode = Integer.parseInt(request.getParameter("questionCode"));
 		
 		// 모델 호출
 		HashMap<String, Object> q = new HashMap<String, Object>();
 		this.questionCommentService = new QuestionCommentService();
-		q = questionCommentService.getCommentCodeByComment(commentCode);
+		q = questionCommentService.getQuestionOne(questionCode);
 		
 		request.setAttribute("q", q);
-		request.setAttribute("commentCode", commentCode);
 		request.setAttribute("loginEmp", loginEmp.getEmpId());
 		
 		// 문의글 수정폼 View

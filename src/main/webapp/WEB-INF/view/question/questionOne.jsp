@@ -5,43 +5,43 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
-		<style>
-			body {
-			  padding:1.5em;
-			  background: #f5f5f5
-			}
-			
-			table {
-			  border: 1px #a39485 solid;
-			  font-size: .9em;
-			  box-shadow: 0 2px 5px rgba(0,0,0,.25);
-			  width: 40%;
-			  border-collapse: collapse;
-			  border-radius: 5px;
-			  overflow: hidden;
-			}
-			th {
-			  text-align: center;
-			}
-			  
-			thead {
-			  font-weight: bold;
-			  color: #fff;
-			}
-			  
-			 td, th {
-			  padding: 1em .5em;
-			  vertical-align: middle;
-			}
-			  
-			 td {
-			  border-bottom: 1px solid rgba(0,0,0,.1);
-			  text-align: center
-			}
-			a {
-			  text-decoration: none;
-			}
-		</style>
+	<style>
+		body {
+		  padding:1.5em;
+		  background: #f5f5f5
+		}
+		
+		table {
+		  border: 1px #a39485 solid;
+		  font-size: .9em;
+		  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+		  width: 40%;
+		  border-collapse: collapse;
+		  border-radius: 5px;
+		  overflow: hidden;
+		}
+		th {
+		  text-align: center;
+		}
+		  
+		thead {
+		  font-weight: bold;
+		  color: #fff;
+		}
+		  
+		 td, th {
+		  padding: 1em .5em;
+		  vertical-align: middle;
+		}
+		  
+		 td {
+		  border-bottom: 1px solid rgba(0,0,0,.1);
+		  text-align: center
+		}
+		a {
+		  text-decoration: none;
+		}
+	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function() {
@@ -75,16 +75,16 @@
 			<div align="center">
 				<table border="1">
 				<tr>
-					<th>문의번호/카테고리</th>
+					<th>문의번호</th>
 				</tr>
 				<tr>
-					<td>${q.questionCode}: ${q.category}</td>
+					<td>${q.questionCode}</td>
 				</tr>
 				<tr>
-					<th>주문번호/상품명</th>
+					<th>카테고리/상품명</th>
 				</tr>
 				<tr>
-					<td>${q.orderCode} : ${q.goodsName}</td>
+					<td> ${q.category} : ${q.goodsName}</td>
 				</tr>
 				<tr>
 					<th>작성일</th>
