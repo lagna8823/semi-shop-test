@@ -63,7 +63,7 @@
 							$('#questionMemo').focus();
 							return;
 						} 
-						$('#moidfyForm').submit();
+						$('#modifyForm').submit();
 						alert('수정되었습니다.')
 				} else { 
 					alert('취소되었습니다.')
@@ -90,9 +90,9 @@
 			<br>
 			<!-- 고객센터 내용 (분류/주문번호, 문의작성일, 문의내용, 답변일, 답변내용-->
 			<div align="center">
-			<form id="moidfyForm" method="post" action="${pageContext.request.contextPath}/question/modifyQuestion" enctype="multipart/form-data">
+			<form id="modifyForm" method="post" action="${pageContext.request.contextPath}/question/modifyQuestion" enctype="multipart/form-data">
 				<table border="1">
-					<input type="hidden" name="questionCode" value="${questionCode}">
+					<input type="hidden" name="questionCode" value="${q.questionCode}">
 					<tr> 
 						<th>문의번호/카테고리</th>
 						<td>
@@ -135,7 +135,7 @@
 					</tr>
 					<tr>
 						<th>문의내용</th>
-						<td ><textarea rows="8" cols="80" name="questionMemo">${q.questionMemo}</textarea></td>
+						<td><textarea rows="8" cols="80" id="questionMemo" name="questionMemo">${q.questionMemo}</textarea></td>
 					</tr>
 					<tr>
 						<th>첨부파일</th>
