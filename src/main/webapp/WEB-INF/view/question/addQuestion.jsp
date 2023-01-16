@@ -5,6 +5,44 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
+	<style>
+		body {
+		  padding:1.5em;
+		  background: #f5f5f5
+		}
+		
+		table {
+		  border: 1px #a39485 solid;
+		  font-size: .9em;
+		  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+		  width: 40%;
+		  border-collapse: collapse;
+		  border-radius: 5px;
+		  overflow: hidden;
+		}
+		th {
+		  border: 1px solid rgba(0,0,0,.1);
+		  text-align: center;
+		}
+		  
+		thead {
+		  font-weight: bold;
+		  color: #fff;
+		}
+		  
+		 td, th {
+		  padding: 1em .5em;
+		  vertical-align: middle;
+		}
+		  
+		 td {
+		  border-bottom: 1px solid rgba(0,0,0,.1);
+		  text-align: center
+		}
+		a {
+		  text-decoration: none;
+		}
+	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 			<script>
 				<!-- 문의글 내용 유효성체크 -->
@@ -59,22 +97,23 @@
 			<a href="${pageContext.request.contextPath}/question/questionListUser">나의문의</a>
 			<a href="${pageContext.request.contextPath}/questionComment/questionCommentList">고객센터(관리자 페이지)</a>
 		</header>
-		<h2>문의글 작성</h2>
-		<div>
-			<button onclick="history.back()">뒤로가기</button>
-		</div>
-		<br>
-		<div>
-			글자수 : <span id="count"></span> 
+		<h2 align="center">문의 작성</h2>
+		<div align="center" style="padding-right: 42em"> 
+				<button onclick="history.back()">뒤로가기</button>
+			</div>
+		<div align="center">
+			<div align="center" style="padding-left: 38em"> 
+				글자수 : <span id="count"></span> 
+			</div>
 			<!-- 문의글 작성 페이지-->
 			<div>
-			<form id="addForm" action="${pageContext.request.contextPath}/question/addQuestion" method="post">
+			<form id="addForm" action="${pageContext.request.contextPath}/question/addQuestion" method="post" enctype="multipart/form-data">
 				<table border="1">
 					<tr>
 						<th>주문번호/상품명</th>
 						<td>
-							<select name="ordersCode" id="ordersCode">
-								<c:forEach var="q" items="${ordersCodeList}">
+							<select name="orderCode" id="orderCode">
+								<c:forEach var="q" items="${orderCodeList}">
 									<option value="${q.orderCode}" >${q.orderCode} : ${q.goodsName}</option>
 								</c:forEach>
 							</select>
@@ -94,10 +133,15 @@
 					<tr>
 						<th>문의내용</th>
 						<td>
-							<textarea id="questionMemo" rows="6" cols="80" name="questionMemo"></textarea>>
+							<textarea id="questionMemo" rows="8" cols="80" name="questionMemo"></textarea>
 						</td>
 					</tr>
+					<tr>
+						<th>첨부파일</th>
+						<td><input type="file" name="questionImg"></td>
+					</tr>
 				</table>
+				<br>
 				<button id="addBtn" type="button">작성</button>
 			</form>
 			</div>

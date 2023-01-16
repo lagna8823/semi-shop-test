@@ -266,7 +266,9 @@
 								</a>
 							</td>
 							<td>
-								${q.questionMemo}	
+								<a href="${pageContext.request.contextPath}/questionComment/questionCommentOne?questionCode=${q.questionCode}">
+										${q.questionMemo}	
+								</a>
 							</td>
 							<td>${q.createdate}</td>
 							<td>
@@ -284,7 +286,9 @@
 									&nbsp;
 								</c:if> 
 								<c:if test="${q.empId != null}">
-									${q.empId}
+									<a href="${pageContext.request.contextPath}/questionComment/questionCommentOne?questionCode=${q.questionCode}">
+										${q.empId}
+									</a>
 								</c:if> 
 							</td>
 							<td>
