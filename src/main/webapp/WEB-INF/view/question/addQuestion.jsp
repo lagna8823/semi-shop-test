@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -47,26 +48,23 @@
 			<script>
 				<!-- 문의글 내용 유효성체크 -->
 				$(document).ready(function() {
+					// 최대 글자수
+					${'MAX_COUNT'} = 500;
+					
+					// 입력된 메모값
+					let questionMemo = document.querySelector('#questionMemo')
+					
 					$('#questionMemo').keyup(function() {
-						// 최대 글자수
-						const MAX_COUNT = 5;
-						//입력한 값의 글자수
-						var inputLength = $('#questionMemo').val().length; 
-						// 남은 글자수
-						var remain = MAX_COUNT-inputLength; 
-						$.querySelector('#count').innerHTML = $('#questionMemo').val().length; 
+						// 입력한 값의 글자수
+						${'len'} = $('#questionMemo').val().length; 
 						
-						if(($('#questionMemo').val().length) < MAX_COUNT){
-							//$('#count').innerHTML = $('#questionMemo').val().length);
-						} else if($('#questionMemo').val().length > MAX_COUNT-1){
-							//console.log($('#questionMemo').val);
+						// 결과
+						if(len < MAX_COUNT){
+							document.querySelector('#count').innerHTML = len;
+						} else if(len > MAX_COUNT-1){
 							alert(MAX_COUNT+'자까지 입력가능합니다');
-							$('#questionMemo').value = $('#questionMemo').value.substring(0, MAX_COUNT);
-							
+							questionMemo.value = questionMemo.value.substring(0, MAX_COUNT);
 						} 
-						/* else {
-							$('#count').innerHTML = $('#questionMemo').val().length);
-						} */
 					});	
 							
 					$('#addBtn').click(function() {
@@ -103,7 +101,7 @@
 			</div>
 		<div align="center">
 			<div align="center" style="padding-left: 38em"> 
-				글자수 : <span id="count"></span> 
+				글자수 : <span id="count">0</span> /500
 			</div>
 			<!-- 문의글 작성 페이지-->
 			<div>
