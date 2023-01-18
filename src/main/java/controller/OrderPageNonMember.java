@@ -27,11 +27,28 @@ public class OrderPageNonMember extends HttpServlet {
 		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
 		Emp loginEmp = (Emp)session.getAttribute("loginEmp");
 		
-		if(loginCustomer != null || loginEmp != null) {
+		if(loginCustomer == null && loginEmp != null) {
 			response.sendRedirect(request.getContextPath()+"/goods/goodsList");
 			return;
 		}
 		
+		Random rd = new Random();//랜덤 객체 생성
+		String customerId = "temp"+ rd.nextInt(100) + rd.nextInt(100) + rd.nextInt(100);
+		String customerPw = "tempPw"+ rd.nextInt(9) + rd.nextInt(9) + rd.nextInt(9);
+		String customerName = "tempName";
+		String customerPhone = "tempPhone";
+		String address = "tempAddress";
+		
+		Customer customer = new Customer();
+		customer.setCustomerId(customerId);
+		customer.setCustomerPw(customerPw);
+		customer.setCustomerName(customerName);
+		customer.setCustomerPhone(customerPhone);
+		
+		// 비회원 아이디 생성
+		this.customerService = new CustomerService();		
+		int resultRow = this.customerService.addCustomer(customer, address);
+		session.setAttribute("loginEmp", returnEmp);		
 		request.getRequestDispatcher("/WEB-INF/view/order/orderPageNonMember.jsp").forward(request, response);
 				
 	}
@@ -49,7 +66,6 @@ public class OrderPageNonMember extends HttpServlet {
 			return;
 		}
 		
-		// 인코딩 : UTF-8
 		Random rd = new Random();//랜덤 객체 생성
 		String customerId = "temp"+ rd.nextInt(100) + rd.nextInt(100) + rd.nextInt(100);
 		String customerPw = request.getParameter("customerPw");
@@ -72,9 +88,7 @@ public class OrderPageNonMember extends HttpServlet {
 		customer.setCustomerName(customerName);
 		customer.setCustomerPhone(customerPhone);
 		
-		// 비회원 아이디 생성
-		this.customerService = new CustomerService();		
-		int resultRow = this.customerService.addCustomer(customer, address);
+		
 
 		String targetUrl = "/customer/addCustomer";
 		if(resultRow == 1) {
