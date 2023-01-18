@@ -3,27 +3,25 @@ package vo;
 public class QuestionComment {
 	private int commentCode;
 	private int questionCode;
-	private String empId;
 	private String commentMemo;
 	private String createdate;
 	
 	public QuestionComment() {
 		super();
 	}
-	
-	public QuestionComment(int commentCode, int questionCode, String empId, String commentMemo, String createdate) {
+
+	public QuestionComment(int commentCode, int questionCode, String commentMemo, String createdate) {
 		super();
 		this.commentCode = commentCode;
 		this.questionCode = questionCode;
-		this.empId = empId;
 		this.commentMemo = commentMemo;
 		this.createdate = createdate;
 	}
 
 	@Override
 	public String toString() {
-		return "QuestionComment [commentCode=" + commentCode + ", questionCode=" + questionCode + ", empId=" + empId
-				+ ", commentMemo=" + commentMemo + ", createdate=" + createdate + "]";
+		return "QuestionComment [commentCode=" + commentCode + ", questionCode=" + questionCode + ", commentMemo="
+				+ commentMemo + ", createdate=" + createdate + "]";
 	}
 
 	public int getCommentCode() {
@@ -42,14 +40,6 @@ public class QuestionComment {
 		this.questionCode = questionCode;
 	}
 
-	public String getEmpId() {
-		return empId;
-	}
-
-	public void setEmpId(String empId) {
-		this.empId = empId;
-	}
-
 	public String getCommentMemo() {
 		return commentMemo;
 	}
@@ -65,6 +55,7 @@ public class QuestionComment {
 	public void setCreatedate(String createdate) {
 		this.createdate = createdate;
 	}
+	
 	
 	
 }

@@ -59,6 +59,11 @@ public class LoginController extends HttpServlet {
 		String empPw = null;
 		Emp emp = null; // 메서드 호출시 매개변수
 		
+		//System.out.println(request.getParameter("customerId"));
+		//System.out.println(request.getParameter("customerPw"));
+		//System.out.println(request.getParameter("empId"));
+		//System.out.println(request.getParameter("empPw"));
+		
 		// 로그인 시도된 값이 고객인지 사원인지 구분
 		if((request.getParameter("customerId") != null) && (request.getParameter("customerPw") != null)) {
 			customer = new Customer(); 
@@ -90,5 +95,4 @@ public class LoginController extends HttpServlet {
 		    response.sendRedirect(request.getContextPath() + "/home");
 	     } 
 	}
-	
 }
