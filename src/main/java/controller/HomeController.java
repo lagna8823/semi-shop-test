@@ -27,7 +27,7 @@ public class HomeController extends HttpServlet {
 			response.sendRedirect(request.getContextPath()+"/login");
 			return;
 		}
-		
+		System.out.println(loginCustomer);	
 		request.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(request, response);
 		
 	}
