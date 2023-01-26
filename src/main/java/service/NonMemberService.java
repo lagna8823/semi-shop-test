@@ -20,56 +20,13 @@ public class NonMemberService {
 	private EmpDao empDao;
 	private OutidDao outidDao;
 	
-	// 주소 수정
-	// 사용하는 곳 : ModifyAddresssController
-	public int modifyAddress(CustomerAddress customerAddress) {
-		
-		int resultRow = 0;
-		
-		Connection conn = null;
-		
-		try {
-			
-			conn = DBUtil.getConnection();
-			conn.setAutoCommit(false);
-
-			this.customerAddressDao = new CustomerAddressDao();
-			
-			resultRow = this.customerAddressDao.modifyAddress(conn, customerAddress);
-			
-			if(resultRow == 1) {
-				conn.commit();
-			}
-			
-		} catch (Exception e) {
-			
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			
-			e.printStackTrace();
-			
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-		return resultRow;
-		
-	}	
-		
-	// customer 수정
-	// 사용하는 곳 : ModifyCustomerController
-	public int modifyCustomer(Customer customer) {
+	// 주문페이지에서 배송지 및 인적사항 입력시 customer, customerAddress 수정
+	// 사용하는 곳 : OrderPageNonMemberController
+	public int modifyCustomer(Customer customer, CustomerAddress customerAddress) {
 
 		int resultRow = 0;
-		
+		int rusultCount=0;
+		int addressResultRow = 0;
 		Connection conn = null;
 		
 		try {
@@ -79,9 +36,15 @@ public class NonMemberService {
 
 			this.customerDao = new CustomerDao();
 			resultRow = this.customerDao.modifyCustomer(conn, customer);
-
+			
 			if(resultRow == 1) {
-				conn.commit();
+				this.customerAddressDao = new CustomerAddressDao();
+				rusultCount = this.customerAddressDao.countAddress(conn, customerAddress);
+				customerAddress.setAddressCode(rusultCount);
+				addressResultRow = this.customerAddressDao.modifyAddress(conn, customerAddress);
+					if(addressResultRow == 1) {
+						conn.commit();
+					}
 			}
 				
 			
@@ -145,7 +108,7 @@ public class NonMemberService {
 			
 			if(checkCId || checkEId || checkOId) {
 				// 셋중 하나라도 중복(true)되면 가입 불가
-				
+				System.out.println(customer.getCustomerId());
 				System.out.println("nonMember ID 중복입니다.");
 				
 				// 중복시 대체 ID 
@@ -161,7 +124,7 @@ public class NonMemberService {
 					String replaceId = replaceTemp.substring(0, rtLen-3) + rtNum;
 					customer.setCustomerId(replaceId);
 					checkCId = this.customerDao.checkCustomerId(conn, customer.getCustomerId());
-					if(checkCId) {
+					if(!checkCId) {
 						System.out.println("대체 ID는 " + customer.getCustomerId() + "입니다.");
 						break breakOut;
 					}
