@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -10,8 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import service.CustomerAddressService;
-import service.CustomerService;
+import listener.NonMemberInfo;
 import service.NonMemberService;
 import vo.Customer;
 import vo.CustomerAddress;
@@ -61,11 +61,13 @@ public class OrderPageNonMember extends HttpServlet {
 		customer.setCustomerPhone(customerPhone);
 		System.out.println(customerId);
 		
+			
 		// 비회원 아이디 생성
 		this.nonMemberService = new NonMemberService();		
 		int resultRow = this.nonMemberService.addCustomer(customer, address);
 		session.setAttribute("loginCustomer", customer);
-		
+		NonMemberInfo nonMemberInfo = new NonMemberInfo(customerId, customerPw);
+		session.setAttribute("nonMemberInfo", nonMemberInfo);
 		request.getRequestDispatcher("/WEB-INF/view/order/orderPageNonMember.jsp").forward(request, response);
 				
 	}
@@ -73,6 +75,7 @@ public class OrderPageNonMember extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 로그인 전에만 진입가능
 		HttpSession session = request.getSession();
+		response.setContentType("text/html;charset=utf-8");
 		System.out.println(session);
 		
 		// 로그인 값 체크
