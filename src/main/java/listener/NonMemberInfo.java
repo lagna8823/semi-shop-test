@@ -27,13 +27,13 @@ public class NonMemberInfo implements HttpSessionBindingListener {
  
      @Override
      public void valueBound(HttpSessionBindingEvent hsbe) {
-           System.out.println("UserInfo 객체가 세션에 바인딩됨");
+           System.out.println("NonMemberInfo 객체가 세션에 바인딩됨");
      }
  
  
      @Override
      public void valueUnbound(HttpSessionBindingEvent hsbe) {
-           System.out.println("UserInfo 객체가 세션에서  언바인딩(제거됨)");
+           System.out.println("NonMemberInfo 객체가 세션에서  언바인딩(제거됨)");
      }
  
  

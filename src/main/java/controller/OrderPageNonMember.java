@@ -66,8 +66,6 @@ public class OrderPageNonMember extends HttpServlet {
 		this.nonMemberService = new NonMemberService();		
 		int resultRow = this.nonMemberService.addCustomer(customer, address);
 		session.setAttribute("loginCustomer", customer);
-		NonMemberInfo nonMemberInfo = new NonMemberInfo(customerId, customerPw);
-		session.setAttribute("nonMemberInfo", nonMemberInfo);
 		request.getRequestDispatcher("/WEB-INF/view/order/orderPageNonMember.jsp").forward(request, response);
 				
 	}

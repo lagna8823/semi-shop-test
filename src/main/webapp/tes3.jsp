@@ -1,27 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-    </head>
+        
     <body>
-        <div id="box">
-            <li class="main">
-                test
-                <ul class="sub" style="display:none">
-                    <li>test1</li>
-                    <il>test2</il>
-                </ul>
-            </ul>
-        </div>
-        <script>
-            $(".main").click(function(){
-                if($(".sub").is(":visible")){
-                    $(".sub").slideUp();
-                }
-                else{
-                    $(".sub").slideDown();
-                }
-            })
-        </script>
     </body>
+    <script>
+  setInterval(function(){
+        console.log("Hello");
+    }, 1000)
+    
+    setTimeout(function(){
+        console.log("Hello World");
+    }, 1000)
+</script>
+    
 </html>

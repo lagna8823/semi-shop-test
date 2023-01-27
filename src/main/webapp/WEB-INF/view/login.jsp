@@ -1,9 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="ko-KR">
+<!doctype html>
+<html class="no-js" lang="zxx">
 	<head>
 	    <meta charset="UTF-8">
 	    <title>Document</title>
+		
+		<!-- 부트스트랩 css 사용 -->
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/Resources/css/bootstrap.css">
+		<!--  부트스트랩 js 사용 -->
+		<script type="text/javascript" src="${pageContext.request.contextPath}/Resources/js/bootstrap.js"></script>
 	
 	    <style type="text/css">
 	        
