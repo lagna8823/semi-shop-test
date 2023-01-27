@@ -61,7 +61,7 @@
   <!-- Links -->
   <ul class="links">
     <li>
-      <a href="#" id="signin">고객 로그인</a>
+      <a href="#" id="signin">고객 로그인!</a>
     </li>
     <li>
       <a href="#" id="signup">판매자 로그인</a>
