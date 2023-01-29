@@ -27,7 +27,12 @@ public class LoginController extends HttpServlet {
 		// 로그인 값 체크
 		Customer loginCustomer = (Customer)session.getAttribute("loginCustomer");
 		Emp loginEmp = (Emp)session.getAttribute("loginEmp");
-		System.out.println(loginCustomer);
+		if((request.getParameter("customerId") != null) && (request.getParameter("customerPw") != null)) {
+			System.out.println(loginCustomer);
+		} else if((request.getParameter("empId") != null) && (request.getParameter("empPw") != null)) {
+			System.out.println(loginEmp);
+		}
+		
 		if(loginCustomer != null || loginEmp != null) {
 			response.sendRedirect(request.getContextPath()+"/home");
 			return;
