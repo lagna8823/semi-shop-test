@@ -8,7 +8,7 @@
 		<title> 로그인 </title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:500,800" rel="stylesheet">
 		<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/Resources/dist/style.css">
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/dist/style.css">
 		
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 	    <script type="text/javascript">
@@ -96,11 +96,11 @@
 				<form id="signinForm" action="${pageContext.request.contextPath}/login" method="post">
 				 <!-- ID input -->
 				 <div class="first-input input__block first-input__block">
-				    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId">
+				    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId" value="test">
 				 </div>
 				 <!-- password input -->
 				 <div class="input__block">
-				    <input type="password" placeholder="Password" class="input" id="customerPw" name="customerPw">
+				    <input type="password" placeholder="Password" class="input" id="customerPw" name="customerPw" value="1234">
 				 </div>
 				 <!-- Login button -->
 				  <button class="signin__btn" id="signinBtn" type="button">
@@ -132,11 +132,11 @@
 				<form id="empSigninForm" action="${pageContext.request.contextPath}/login" method="post">
 				 <!-- ID input -->
 				 <div class="first-input input__block first-input__block">
-				    <input type="text" placeholder="ID" class="input" id="empId" name="empId">
+				    <input type="text" placeholder="ID" class="input" id="empId" name="empId" value="emptest">
 				 </div>
 				 <!-- password input -->
 				 <div class="input__block">
-				    <input type="password" placeholder="Password" class="input" id="empPw" name="empPw">
+				    <input type="password" placeholder="Password" class="input" id="empPw" name="empPw" value="1234">
 				 </div>
 				 <!-- Login button -->
 				  <button class="signin__btn" id="empSigninBtn" type="button">
@@ -183,7 +183,6 @@
 	</footer>
 	</div>
 	<!-- partial -->
-	  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script><script  src="${pageContext.request.contextPath}/Resources/dist/script.js"></script>
-	ㅡ
+	  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script><script  src="${pageContext.request.contextPath}/resources/dist/script.js"></script>
 	</body>
 </html>
