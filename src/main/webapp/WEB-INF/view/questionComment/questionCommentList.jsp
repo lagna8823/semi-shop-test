@@ -109,7 +109,7 @@
 																		</c:if>
 																	</select>
 					
-																	<!-- 분류별 -->
+																	<!-- 카테고리 -->
 																	<select class = "form-control" name="category" id="category">
 																		<c:if test="${category == ('')}">
 																				<option value="" selected="selected">전체</option>
