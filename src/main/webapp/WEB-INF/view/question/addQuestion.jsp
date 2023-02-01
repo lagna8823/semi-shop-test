@@ -90,14 +90,15 @@
 									<h2 class = "font-weight-bold text-center">문의 작성</h2>
 									<div class="row justify-content-center mt-3">
 										<div class="col-12">
-											<div align="center" style="padding-left: 38em"> 
+											<br>
+											<div align="center" style="padding-left: 50em"> 
 												글자수 : <span id="count">0</span> / 500
 											</div>
 											
 											<!-- 문의 작성 리스트 -->
 											<div class="table-responsive mb-5">
 												<form id="addForm" action="${pageContext.request.contextPath}/question/addQuestion" method="post" enctype="multipart/form-data">
-													<table class = "table expandable-table table-hover text-center">
+													<table border="1" class = "table expandable-table table-hover text-center">
 														<tr>
 															<th>주문번호/상품명</th>
 															<td>
@@ -122,7 +123,7 @@
 														<tr>
 															<th>문의내용</th>
 															<td>
-																<textarea id="questionMemo" rows="8" cols="80" name="questionMemo"></textarea>
+																<textarea id="questionMemo" rows="8" cols="100" name="questionMemo"></textarea>
 															</td>
 														</tr>
 														<tr>

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import listener.NonMemberInfo;
 import service.NonMemberService;
 import vo.Customer;
 import vo.CustomerAddress;
@@ -35,6 +34,9 @@ public class OrderPageNonMember extends HttpServlet {
 			response.sendRedirect(request.getContextPath()+"/goods/goodsList");
 			return;
 		}
+		
+		int goodsCode = Integer.parseInt(request.getParameter("goodsCode"));
+		System.out.println("orderPageNonMember의 goodsCode : "+goodsCode);
 		
 		// 랜덤 객체 생성
 		String rdA;

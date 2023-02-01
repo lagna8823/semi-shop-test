@@ -40,8 +40,14 @@
 		<a href="${pageContext.request.contextPath}/notice/noticeList?currentPage=1">처음</a>		
 		<c:if test="${currentPage > 1}">
 			<a href="${pageContext.request.contextPath}/notice/noticeList?currentPage=${currentPage-1}">이전</a>
-		</c:if>	
-		<span>${currentPage}</span>	
+		</c:if>
+		<c:forEach var="index" begin="${startPage}" end="${endPage}" step="1">
+				<!-- active 속성 -->
+		
+				<c:if test="${index <= lastPage }">
+					<a href="${pageContext.request.contextPath}/notice/noticeList?currentPage=${index}">${index}</a>	
+				</c:if>
+		</c:forEach>	
 		<c:if test="${currentPage < lastPage}">
 			<a href="${pageContext.request.contextPath}/notice/noticeList?currentPage=${currentPage+1}">다음</a>
 		</c:if>	

@@ -8,7 +8,7 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>문의 작성</title>
+		<title>문의 상세페이지</title>
 		
 		<!-- plugins:css -->
 		<link rel="stylesheet" href="${pageContext.request.contextPath }/resources2/vendors/feather/feather.css">
@@ -57,17 +57,15 @@
 									<div align="center" style="padding-right: 55em"> 
 										<button class="btn btn-sm btn-primary" onclick="history.back()">뒤로가기</button>
 									</div>	
-									<h2 class = "font-weight-bold text-center">${q.customerId}님의 문의 ( ${q.questionCode} ) </h2>
+									<h2 class = "font-weight-bold text-center" align="center" style="padding-left: 3em">${q.customerId}님의 문의 ( ${q.questionCode} ) </h2>
 									<div class="row justify-content-center mt-3">
 										<div class="col-12">
 										<br>
-										<div align="center" style="padding-left: 42em"> 
-											작성일 : ${q.createdate}
-										</div>
+										<div align="center" style="padding-left: 50em">작성일 : ${q.createdate}</div>
 										
 										<!-- 문의 상세보기 (문의 종류, 문의내용, 답변일, 답변내용)-->
 										<div class="table-responsive mb-5">
-											<table class = "table expandable-table table-hover text-center">
+											<table border="1" class = "table expandable-table table-hover text-center">
 												<tr>
 													<th>문의 종류</th>
 													<td>${q.category} 문의 </td>
@@ -78,7 +76,7 @@
 												</tr>
 												<tr>
 													<th>문의내용</th>
-													<td><textarea rows="8" cols="80" readonly="readonly">${q.questionMemo}</textarea></td>
+													<td><textarea rows="8" cols="100" readonly="readonly">${q.questionMemo}</textarea></td>
 												</tr>
 												
 												<!-- 첨부 파일 있을시에만 보임 -->
@@ -87,7 +85,7 @@
 												</c:if> 
 												<c:if test="${q.questionImg != null}">
 													<tr>
-														<th>첨부사진</th>
+														<th>첨부파일</th>
 														<td>
 															<div><img src="${pageContext.request.contextPath}/upload/${q.questionImg}" width="200" height="200"></div>
 														</td>
@@ -98,25 +96,30 @@
 													<th>답변일</th>
 													<td>
 														<c:if test="${q.commentMemo == null}">답변전</c:if> 
-														<c:if test="${q.commentMemo != null}">${q.commentCreatedate}</c:if> 
+														<c:if test="${q.commentMemo != null}">
+															${q.commentCreatedate}
+														</c:if> 
 													</td>
 												</tr>
 												<tr>
 													<th >답변내용</th>
 													<td >
 														<c:if test="${q.commentMemo == null}">답변전</c:if> 
-														<c:if test="${q.commentMemo != null}"><textarea rows="8" cols="80">${q.commentMemo}</textarea></c:if>
+														<c:if test="${q.commentMemo != null}">
+															<textarea rows="8" cols="100" readonly="readonly">
+																${q.commentMemo}
+															</textarea>
+														</c:if>
 													</td>
 												</tr>
 												</table>
 											</div>
-											<br>
 											
 											<div class="input-group-append justify-content-center" style="padding-left: 8em">
 												<!-- 문의글 수정 button -->
 												<c:if test="${loginCustomer == customerId and q.commentMemo == null and loginEmp == null}">
 													<button  class="btn btn-sm btn-primary" onClick="location.href='${pageContext.request.contextPath}/question/modifyQuestion?questionCode=${q.questionCode}'">
-														<span>수정</span> 
+														<span>수정하기</span> 
 													</button>	
 												</c:if>
 												<c:if test="${(loginCustomer != customerId and q.commentMemo != null) or (loginEmp != null  and q.commentMemo != null)}">
@@ -126,7 +129,7 @@
 												<!-- 문의글 삭제 button -->	
 												<c:if test="${loginCustomer == customerId and q.commentMemo == null and loginEmp == null}">
 													<button id="remove" class="btn btn-sm btn-primary" onClick="location.href='${pageContext.request.contextPath}/question/removeQuestion?questionCode=${q.questionCode}'">
-														<span>삭제</span> 
+														<span>삭제하기</span> 
 													</button>
 												</c:if>
 												<c:if test="${(loginCustomer != customerId and q.commentMemo != null) or (loginEmp != null and q.commentMemo != null)}">

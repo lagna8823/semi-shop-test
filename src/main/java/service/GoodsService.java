@@ -6,9 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dao.EmpDao;
 import dao.GoodsDao;
 import dao.GoodsImgDao;
 import util.DBUtil;
+import vo.Emp;
 import vo.Goods;
 import vo.GoodsImg;
 
@@ -20,7 +22,6 @@ public class GoodsService {
 	public int updateHit(Goods goods) {
 		int row = 0;
 		Connection conn = null;
-		
 		try {
 			conn = DBUtil.getConnection();
 			conn.setAutoCommit(false);
@@ -73,9 +74,9 @@ public class GoodsService {
 		}
 		return topList;
 	}
-
+	
 	// 검색한 상품 리스트
-	public ArrayList<HashMap<String, Object>> getItemListBySearch(int beginRow, int rowPerPage, String searchWord) {
+	public ArrayList<HashMap<String, Object>> getItemListBySearch(int beginRow, int endRow, String searchWord, String category) {
 		ArrayList<HashMap<String, Object>> list = null;
 		Connection conn = null;
 		try {
@@ -83,7 +84,7 @@ public class GoodsService {
 			System.out.println("db 접속(goodsList)");
 			conn.setAutoCommit(false);
 			goodsDao = new GoodsDao();
-			list = goodsDao.selectSearchItemList(conn, beginRow, rowPerPage, searchWord);
+			list = goodsDao.selectSearchItemList(conn, beginRow, endRow, searchWord, category);
 			conn.commit();
 		} catch(Exception e) {
 			try {
@@ -101,17 +102,17 @@ public class GoodsService {
 		}
 		return list;
 	}
-	
 	// 상품 리스트
-	public ArrayList<HashMap<String, Object>> getItemList(int beginRow, int rowPerPage) {
+	public ArrayList<HashMap<String, Object>> getItemList(int beginRow, int endRow, String searchWord, String category) {
 		ArrayList<HashMap<String, Object>> list = null;
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			System.out.println("db 접속(goodsList)");
+			System.out.println("db 접속(goodsList)-Service");
 			conn.setAutoCommit(false);
 			goodsDao = new GoodsDao();
-			list = goodsDao.selectItemList(conn, beginRow, rowPerPage);
+			list = goodsDao.selectItemList(conn, beginRow, endRow, category);
+			System.out.println(category+"<---serivce카테고리");
 			conn.commit();
 		} catch(Exception e) {
 			try {
