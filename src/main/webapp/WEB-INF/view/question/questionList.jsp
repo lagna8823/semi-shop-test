@@ -162,24 +162,10 @@
 												</c:if>
 												
 												<!-- 페이지 1 ~ 10 -->
-													<c:forEach var="i" items="${pageList }">
-														<!-- 현재페이지 active 속성 부여 -->
-														<c:choose>
-															<c:when test="${currentPage == i}">
-																<li class = "page-item active">
-															</c:when >
-															<c:otherwise>
-																<li class = "page-item">
-															</c:otherwise>
-														</c:choose>
-													
-														<!-- 마지막 페이지 까지만 출력 -->
-														<c:if test="${i <= lastPage }"> 
-															<a class="page-link" href="${pageContext.request.contextPath }/question/questionList?word=${word}&rowPerPage=${rowPerPage}&currentPage=${i}">
-																<span>${i }</span>
-															</a>
-														</c:if>
-														
+													<c:forEach var="i" begin="${beginPage}" end="${endPage}" step="1">
+														<span>
+															<a href="${pageContext.request.contextPath}/employee/studentList?currentPage=${i}&word=${word}">${i}</a>
+														</span>
 													</c:forEach>
 											
 													<!-- 페이지 다음(+10의 1페이지) -->

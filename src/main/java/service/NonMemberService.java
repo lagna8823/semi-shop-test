@@ -8,6 +8,7 @@ import dao.CustomerDao;
 import dao.EmpDao;
 import dao.NonMemberAddressDao;
 import dao.OutidDao;
+import dao.PwHistoryDao;
 import util.DBUtil;
 import vo.Customer;
 import vo.CustomerAddress;
@@ -18,6 +19,7 @@ public class NonMemberService {
 	private NonMemberAddressDao nonMemberAddressDao;
 	private EmpDao empDao;
 	private OutidDao outidDao;
+	private PwHistoryDao pwHistoryDao;
 	
 	
 	// 비회원 및 비회원주소 삭제
@@ -25,6 +27,11 @@ public class NonMemberService {
 	public int deleteCustomer(Customer customer) {
 		
 		int resultRow = 0;
+		
+		int resultRowP = 0;
+		int resultRowC = 0;
+		int resultRowO = 0;
+		
 		int resultRowAddress = 0;
 		Connection conn = null;
 		String customerId = customer.getCustomerId();
@@ -37,17 +44,32 @@ public class NonMemberService {
 			// 주소 코드 가져오기 위해 값세팅
 			CustomerAddress customerAddress = new CustomerAddress();
 			customerAddress.setCustomerId(customer.getCustomerId());
-			System.out.println(customerAddress.getCustomerId()+"서비스 주소값11");
+			//System.out.println(customerAddress.getCustomerId()+"서비스 주소값11");
 			
 			// 주소값 삭제
 			this.nonMemberAddressDao = new NonMemberAddressDao();
 			resultRowAddress = this.nonMemberAddressDao.deleteAddress(conn, customerAddress);
 			if(resultRowAddress==1) {
+				
+				// pwHistory 삭제
+				this.pwHistoryDao = new PwHistoryDao();
+				resultRowP = this.pwHistoryDao.deletePwHistory(conn, customer.getCustomerId());
+				
 				// customer 삭제
 				this.customerDao = new CustomerDao();
-				resultRow = this.customerDao.deleteCustomer(conn, customerId);
-					if(resultRow == 1) {
+				resultRowC = this.customerDao.deleteCustomer(conn, customerId);
+				
+				// outid 추가
+				this.outidDao = new OutidDao();
+				resultRowO = this.outidDao.addOutid(conn, customer.getCustomerId());
+				
+					if(resultRowP == 1 && resultRowC == 1 && resultRowO == 1) {
+						
+						// 모든 단계 성공하면 commit
+						resultRow = 1;
+						
 						conn.commit();
+						
 					}
 			}
 			

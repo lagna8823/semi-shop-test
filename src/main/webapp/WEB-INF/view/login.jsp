@@ -99,7 +99,7 @@
 					<form id="signinForm" action="${pageContext.request.contextPath}/login" method="post">
 					 <!-- ID input -->
 					 <div class="first-input input__block first-input__block">
-					    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId" value="test">
+					    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId" value="zola">
 					 </div>
 					 <!-- password input -->
 					 <div class="input__block">
@@ -136,7 +136,7 @@
 					    <input type="hidden" id="goodsCode" name="goodsCode" value="${goodsCode}">
 					 <%-- ID input --%>
 					 <div class="first-input input__block first-input__block">
-					    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId" value="test">
+					    <input type="text" placeholder="ID" class="input" id="customerId" name="customerId" value="San">
 					 </div>
 					 <%-- password input --%>
 					 <div class="input__block">
@@ -173,7 +173,7 @@
 				<form id="empSigninForm" action="${pageContext.request.contextPath}/login" method="post">
 				 <!-- ID input -->
 				 <div class="first-input input__block first-input__block">
-				    <input type="text" placeholder="ID" class="input" id="empId" name="empId" value="emptest">
+				    <input type="text" placeholder="ID" class="input" id="empId" name="empId" value="Sam">
 				 </div>
 				 <!-- password input -->
 				 <div class="input__block">
