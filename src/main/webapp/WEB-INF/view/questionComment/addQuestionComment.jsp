@@ -43,8 +43,8 @@
 	  		}
 	  		
 	  		.td {
-	  			text-align:left;
-	  			align:left;
+	  			text-align:center;
+	  			align:center;
 	  		}
 	  	</style>
 	  	
@@ -143,10 +143,8 @@
 													</tr>
 													<tr class="tr">
 														<th>문의내용</th>
-														<td class="td">
-															<textarea id="questionMemo" rows="8" cols="100" name="questionMemo" readonly="readonly">
-																${q.questionMemo}
-															</textarea>
+														<td>
+															<textarea id="questionMemo" rows="8" cols="100" name="questionMemo" readonly="readonly">${q.questionMemo}</textarea>
 														</td>
 													</tr>
 													<!-- 첨부 파일 있을시에만 보임 -->

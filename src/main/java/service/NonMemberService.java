@@ -12,6 +12,7 @@ import dao.PwHistoryDao;
 import util.DBUtil;
 import vo.Customer;
 import vo.CustomerAddress;
+import vo.PwHistory;
 
 public class NonMemberService {
 	private CustomerDao customerDao;
@@ -53,7 +54,7 @@ public class NonMemberService {
 				
 				// pwHistory 삭제
 				this.pwHistoryDao = new PwHistoryDao();
-				resultRowP = this.pwHistoryDao.deletePwHistory(conn, customer.getCustomerId());
+				resultRowP = this.pwHistoryDao.deletePwHistory(conn, customerId);
 				
 				// customer 삭제
 				this.customerDao = new CustomerDao();
@@ -158,9 +159,11 @@ public class NonMemberService {
 		boolean checkEId = false;
 		boolean checkOId = false;
 		
-		int resultRowA = 0;
+		int resultRowP = 0;
 		int resultRowC = 0;
+		int resultRowA = 0;
 		
+		PwHistory pwHistory = null;
 		CustomerAddress customerAddress = null;
 		
 		Connection conn = null;
@@ -171,6 +174,7 @@ public class NonMemberService {
 			conn.setAutoCommit(false);
 
 			this.customerDao = new CustomerDao();
+			this.pwHistoryDao = new PwHistoryDao();		// customer 비밀번호 이력 추가
 			this.customerAddressDao = new CustomerAddressDao();	// customer 주소 추가
 			this.empDao = new EmpDao();		// ID 중복 확인
 			this.outidDao = new OutidDao();	// ID 중복 확인
@@ -198,6 +202,7 @@ public class NonMemberService {
 					rtNum = rtNum + 1;
 					String replaceId = replaceTemp.substring(0, rtLen-3) + rtNum;
 					customer.setCustomerId(replaceId);
+					customer.setCustomerPw(replaceId);
 					checkCId = this.customerDao.checkCustomerId(conn, customer.getCustomerId());
 					if(!checkCId) {
 						System.out.println("대체 ID는 " + customer.getCustomerId() + "입니다.");
@@ -205,15 +210,22 @@ public class NonMemberService {
 					}
 				}
 			}	
+			
+			pwHistory = new PwHistory();
+			pwHistory.setCustomerId(customer.getCustomerId());
+			pwHistory.setPw(customer.getCustomerPw());
+			
+			
 			customerAddress = new CustomerAddress();
 			customerAddress.setCustomerId(customer.getCustomerId());
 			customerAddress.setAddress(address);
 			
 			
 			resultRowC = this.customerDao.addCustomer(conn, customer);
+			resultRowP = this.pwHistoryDao.addPwHistory(conn, pwHistory);
 			resultRowA = this.customerAddressDao.addAddress(conn, customerAddress);
 			
-			if(resultRowC == 1 && resultRowA == 1) {
+			if(resultRowC == 1 && resultRowP == 1 && resultRowA == 1) {
 				// customer, pwHistory, address 모두 추가 성공하면
 				resultRow = 1;
 				
